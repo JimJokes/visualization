@@ -3,6 +3,7 @@ using UnityEngine.Networking;
 using System.Collections;
 using System;
 using Baracuda.Monitoring;
+using System.Collections.Generic;
 
 public class BackendWebrequests : MonitoredBehaviour
 {
@@ -61,6 +62,27 @@ public class BackendWebrequests : MonitoredBehaviour
                     roads_count = map.roads.Length;
                     prefabs_count = map.prefabs.Length;
                     Debug.Log("Map data updated!");
+
+                    List<string> lane_types = new List<string>();
+                    foreach (Road road in map.roads)
+                    {
+                        foreach (string type in new string[] { "lanes_left", "lanes_right" })
+                        {
+                            foreach (string lane in road.road_look.GetType().GetField(type).GetValue(road.road_look) as string[])
+                            {
+                                if (!lane_types.Contains(lane))
+                                {
+                                    lane_types.Add(lane);
+                                }
+                            }
+                        }
+                    }
+
+                    foreach (string lane in lane_types)
+                    {
+                        Debug.Log(lane);
+                    }
+
                 }
                 else if(tag == "map_update_time")
                 {
