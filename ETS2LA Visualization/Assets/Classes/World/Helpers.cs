@@ -9,7 +9,7 @@ public class Point
 
     public Vector3 ToVector3()
     {
-        return new Vector3(x, y, z);
+        return new Vector3(z, y, x);
     }
 }
 

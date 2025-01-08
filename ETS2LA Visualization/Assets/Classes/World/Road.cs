@@ -31,14 +31,14 @@ public class Lane
                 direction = (point - points[i - 1].ToVector3()).normalized;
             }
 
-            Vector3 normal = Vector3.Cross(direction, Vector3.down).normalized;
+            Vector3 normal = Vector3.Cross(direction, Vector3.up).normalized;
             Vector3 tangent = direction;
 
             vertices[i * 2] = point + normal * lane_width / 2;
             vertices[i * 2 + 1] = point - normal * lane_width / 2;
             uv[i * 2] = new Vector2(0, (float)i / (points.Length - 1));
             uv[i * 2 + 1] = new Vector2(1, (float)i / (points.Length - 1));
-            normals[i * 2] = normals[i * 2 + 1] = Vector3.down;
+            normals[i * 2] = normals[i * 2 + 1] = Vector3.up;
             tangents[i * 2] = tangents[i * 2 + 1] = new Vector4(tangent.x, tangent.y, tangent.z, 1);
         }
 
