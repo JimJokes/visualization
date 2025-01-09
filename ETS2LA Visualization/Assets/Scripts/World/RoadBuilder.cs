@@ -86,6 +86,13 @@ public class RoadBuilder : MonoBehaviour
                 }
                 
                 GameObject road_object = new GameObject("Road " + road.uid.ToString());
+                
+                Vector3 average = new Vector3(0, 0, 0);
+                for (int i = 0; i < road.points.Length; i++)
+                {
+                    average += road.points[i].ToVector3();
+                }
+                road_object.transform.position = average / road.points.Length;
 
                 for(int i = 0; i < road.lanes.Length; i++)
                 {
@@ -108,10 +115,14 @@ public class RoadBuilder : MonoBehaviour
                     GameObject marking_object = new GameObject("Marking Left " + i.ToString() + " " + left_marking.ToString());
                     marking_object.AddComponent<MeshFilter>().mesh = marking_mesh;
                     MeshRenderer marking_mesh_renderer = marking_object.AddComponent<MeshRenderer>();
-                    if (left_marking == RoadMarkingType.DASHED)
+                    if (left_marking == RoadMarkingType.DASHED || left_marking == RoadMarkingType.DASHED_SHORT)
                     {
                         marking_mesh_renderer.material = dashed_marking_material;
                         marking_mesh_renderer.material.SetFloat("_length", road.length);
+                        if (left_marking == RoadMarkingType.DASHED_SHORT)
+                        {
+                            marking_mesh_renderer.material.SetFloat("_dashes_per_meter", 0.4f);
+                        }
                     }
                     else
                     {
@@ -124,10 +135,14 @@ public class RoadBuilder : MonoBehaviour
                     marking_object = new GameObject("Marking Right " + i.ToString() + " " + right_marking.ToString());
                     marking_object.AddComponent<MeshFilter>().mesh = marking_mesh;
                     marking_mesh_renderer = marking_object.AddComponent<MeshRenderer>();
-                    if (right_marking == RoadMarkingType.DASHED)
+                    if (right_marking == RoadMarkingType.DASHED || right_marking == RoadMarkingType.DASHED_SHORT)
                     {
                         marking_mesh_renderer.material = dashed_marking_material;
                         marking_mesh_renderer.material.SetFloat("_length", road.length);
+                        if (right_marking == RoadMarkingType.DASHED_SHORT)
+                        {
+                            marking_mesh_renderer.material.SetFloat("_dashes_per_meter", 0.4f);
+                        }
                     }
                     else
                     {

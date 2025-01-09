@@ -5,7 +5,7 @@
 //---------- -------------------------- -------
 
 //Runtime Monitoring
-//File generated: 2025-01-07 18:49:50Z
+//File generated: 2025-01-09 16:02:03Z
 //Please dont change the contents of this file. Otherwise IL2CPP runtime may not work with runtime monitoring!
 //Ensure that this file is located in Assembly-CSharp. Otherwise this file may not compile.
 //If this file contains any errors please contact me and/or create an issue in the linked repository.
@@ -13,7 +13,7 @@
 
 #if ENABLE_IL2CPP && !DISABLE_MONITORING
 
-internal class IL2CPP_AOT_RM2L57JFNHVZ5IZH3TO8
+internal class IL2CPP_AOT_22Z9AZLR2CF99H3CO261
 {
     //Value Processor Method Definitions
 
@@ -24,8 +24,8 @@ internal class IL2CPP_AOT_RM2L57JFNHVZ5IZH3TO8
         //  [Field Definitions] 
 
         // BackendSocket::packets_per_second (System.Int32)
-        // BackendWebrequests::roads (System.Int32)
-        // BackendWebrequests::prefabs (System.Int32)
+        // BackendWebrequests::roads_count (System.Int32)
+        // BackendWebrequests::prefabs_count (System.Int32)
         Baracuda.Monitoring.IL2CPP.IL2CPPTypeDefinitions.TypeDefField<System.Object, System.Int32>();
 
         // BackendSocket::connection_status (System.String)

@@ -1,11 +1,5 @@
 using UnityEngine;
 
-public enum Side
-{
-    LEFT,
-    RIGHT
-}
-
 public enum RoadMarkingType
 {
     NONE,

@@ -786,9 +786,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   backend: {fileID: 2083485857}
   base_material: {fileID: 2100000, guid: 254da417a0d872f4a95e7ab90cf5f064, type: 2}
-  parallel_threshold: 0.5
   solid_marking_material: {fileID: 2100000, guid: f1e58f5d744562f4b8fce9591b1a6b2c, type: 2}
   dashed_marking_material: {fileID: 2100000, guid: 5eb87bd7dd64c0745abdc5133441326b, type: 2}
+  close_threshold: 4.6
+  same_threshold: 0.25
+  parallel_threshold: 0.05
 --- !u!1 &1028169602
 GameObject:
   m_ObjectHideFlags: 0

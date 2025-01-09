@@ -8,118 +8,168 @@ public class PrefabBuilder : MonoBehaviour
     private List<int> instantiated_prefabs = new List<int>();
     public BackendWebrequests backend;
     public Material base_material;
-    public float parallel_threshold = 0.5f; // meters
     public Material solid_marking_material;
     public Material dashed_marking_material;
 
-    RoadMarkingType[] GetMarkingsForLane(Prefab prefab, int route_index)
+    public float close_threshold = 4.75f;
+    public float same_threshold = 0.25f;
+    public float parallel_threshold = 0.25f;
+
+    PrefabMarking[] GetMarkingsForLane(Prefab prefab, int route_index)
     {
         NavRoute route = prefab.nav_routes[route_index];
         if (route == null)
         {
-            return new RoadMarkingType[] { RoadMarkingType.NONE, RoadMarkingType.NONE };
+            return new PrefabMarking[] { new PrefabMarking(), new PrefabMarking() };
         }
         if (route.points == null || route.points.Length == 0)
         {
-            return new RoadMarkingType[] { RoadMarkingType.NONE, RoadMarkingType.NONE };
+            return new PrefabMarking[] { new PrefabMarking(), new PrefabMarking() };
         }
         
-        NavRoute next_route = null;
-        NavRoute prev_route = null;
+        PrefabMarking solid_marking = new PrefabMarking();
+        solid_marking.type = RoadMarkingType.SOLID;
+        PrefabMarking left_marking = solid_marking;
+        PrefabMarking right_marking = solid_marking;
 
-        Vector2 route_vector = new Vector2(route.points[route.points.Length - 1].x - route.points[0].x, route.points[route.points.Length - 1].z - route.points[0].z);
-        
-        RoadMarkingType left_marking = RoadMarkingType.NONE;
-        RoadMarkingType right_marking = RoadMarkingType.NONE;
+        float closest_right_distance = float.MaxValue;
+        float closest_left_distance = float.MaxValue;
+        NavRoute closest_right = null;
+        NavRoute closest_left = null;
 
-        if (route_index > 0)
+        foreach (NavRoute other_route in prefab.nav_routes)
         {
-            try { prev_route = prefab.nav_routes[route_index - 1]; } catch { }
-        }
-        if (route_index < prefab.nav_routes.Length - 1)
-        {
-            try { next_route = prefab.nav_routes[route_index + 1]; } catch { }
-        }
-
-        // Check next route
-        if (next_route != null)
-        {
-            if (next_route.points == null || next_route.points.Length == 0)
+            if (other_route == route)
             {
-                return new RoadMarkingType[] { RoadMarkingType.NONE, RoadMarkingType.NONE };
+                continue;
             }
 
-            float next_start_distance = Vector3.Distance(route.points[0].ToVector3(), next_route.points[0].ToVector3());
-            float next_end_distance = Vector3.Distance(route.points[route.points.Length - 1].ToVector3(), next_route.points[next_route.points.Length - 1].ToVector3());
+            float start_distance = Vector3.Distance(route.points[0].ToVector3(), other_route.points[0].ToVector3());
+            float end_distance = Vector3.Distance(route.points[route.points.Length - 1].ToVector3(), other_route.points[other_route.points.Length - 1].ToVector3());
 
-            Vector2 next_vector = new Vector2(next_route.points[next_route.points.Length - 1].x - next_route.points[0].x, next_route.points[next_route.points.Length - 1].z - next_route.points[0].z);
-
-            bool is_left = math.dot(route_vector, next_vector) < 0;
-
-            if(math.abs(next_start_distance - next_end_distance) < parallel_threshold)
+            if (start_distance < close_threshold && start_distance > same_threshold && end_distance > same_threshold)
             {
-                if(is_left)
+                Vector2 A = new Vector2(route.points[0].x, route.points[0].z);
+                Vector2 B = new Vector2(route.points[route.points.Length - 1].x, route.points[route.points.Length - 1].z);
+                Vector2 C = new Vector2(other_route.points[0].x, other_route.points[0].z);
+
+                // Triangle ABC, angle is either 90 or 270 degrees depending on the side (right, left)
+                float angle = math.atan2((B.y - A.y) * (C.x - A.x) - (B.x - A.x) * (C.y - A.y), (B.x - A.x) * (C.x - A.x) + (B.y - A.y) * (C.y - A.y));
+                Debug.Log("Prefab " + prefab.uid + " Route " + route_index + " Other Route " + Array.IndexOf(prefab.nav_routes, other_route) + " Angle: " + math.degrees(angle));
+
+                if (angle < 0)
                 {
-                    left_marking = RoadMarkingType.DASHED;
+                    float distance = Vector3.Distance(route.points[0].ToVector3(), other_route.points[0].ToVector3());
+                    if (distance < closest_right_distance)
+                    {
+                        closest_right_distance = distance;
+                        closest_right = other_route;
+                    }
                 }
-                else
+                else if (angle > 0)
                 {
-                    right_marking = RoadMarkingType.DASHED;
+                    float distance = Vector3.Distance(route.points[0].ToVector3(), other_route.points[0].ToVector3());
+                    if (distance < closest_left_distance)
+                    {
+                        closest_left_distance = distance;
+                        closest_left = other_route;
+                    }
+                }
+            }
+            else if (start_distance < close_threshold && end_distance > same_threshold) // Start from same point
+            {
+                Vector2 A = new Vector2(route.points[route.points.Length - 1].x, route.points[route.points.Length - 1].z);
+                Vector2 B = new Vector2(route.points[0].x, route.points[0].z);
+                Vector2 C = new Vector2(other_route.points[other_route.points.Length - 1].x, other_route.points[other_route.points.Length - 1].z);
+            
+                float angle = math.atan2((B.y - A.y) * (C.x - A.x) - (B.x - A.x) * (C.y - A.y), (B.x - A.x) * (C.x - A.x) + (B.y - A.y) * (C.y - A.y));
+                Debug.Log("Prefab " + prefab.uid + " Route " + route_index + " Other Route " + Array.IndexOf(prefab.nav_routes, other_route) + " Angle: " + math.degrees(angle) + " Distance: " + start_distance);
+
+                if (angle > 0)
+                {
+                    closest_right_distance = 0;
+                    closest_right = null;
+                    right_marking = new PrefabMarking();
+                }
+                else if (angle < 0)
+                {
+                    closest_left_distance = 0;
+                    closest_left = null;
+                    left_marking = new PrefabMarking();
                 }
             }
             else
             {
-                if(is_left)
+                if (end_distance < same_threshold) 
                 {
-                    left_marking = RoadMarkingType.NONE;
-                }
-                else
-                {
-                    right_marking = RoadMarkingType.NONE;
+                    // Two lanes that merge into one.
+                    Vector2 A = new Vector2(route.points[0].x, route.points[0].z);
+                    Vector2 B = new Vector2(route.points[route.points.Length - 1].x, route.points[route.points.Length - 1].z);
+                    Vector2 C = new Vector2(other_route.points[0].x, other_route.points[0].z);
+
+                    float angle = math.atan2((B.y - A.y) * (C.x - A.x) - (B.x - A.x) * (C.y - A.y), (B.x - A.x) * (C.x - A.x) + (B.y - A.y) * (C.y - A.y));
+
+                    Debug.Log("Prefab " + prefab.uid + " Route " + route_index + " Other Route " + Array.IndexOf(prefab.nav_routes, other_route) + " Angle: " + math.degrees(angle) + " Distance: " + start_distance);
+
+                    if (angle < 0)
+                    {
+                        closest_right_distance = 0;
+                        closest_right = null;
+                        right_marking = new PrefabMarking();
+                    }
+                    else if (angle > 0)
+                    {
+                        closest_left_distance = 0;
+                        closest_left = null;
+                        left_marking = new PrefabMarking();
+                    } 
                 }
             }
         }
 
-        // Check previous route
-        if (prev_route != null)
+        if (closest_right != null)
         {
-            if (prev_route.points == null || prev_route.points.Length == 0)
+            float closest_right_end_distance = Vector3.Distance(route.points[route.points.Length - 1].ToVector3(), closest_right.points[closest_right.points.Length - 1].ToVector3());
+            float change = closest_right_distance - closest_right_end_distance;
+            if (math.abs(change) < parallel_threshold)
             {
-                return new RoadMarkingType[] { RoadMarkingType.NONE, RoadMarkingType.NONE };
-            }
-
-            float prev_start_distance = Vector3.Distance(route.points[0].ToVector3(), prev_route.points[0].ToVector3());
-            float prev_end_distance = Vector3.Distance(route.points[route.points.Length - 1].ToVector3(), prev_route.points[prev_route.points.Length - 1].ToVector3());
-
-            Vector2 prev_vector = new Vector2(prev_route.points[prev_route.points.Length - 1].x - prev_route.points[0].x, prev_route.points[prev_route.points.Length - 1].z - prev_route.points[0].z);
-
-            bool is_left = math.dot(route_vector, prev_vector) < 0;
-
-            if(math.abs(prev_start_distance - prev_end_distance) < parallel_threshold)
-            {
-                if(is_left)
-                {
-                    left_marking = RoadMarkingType.DASHED;
-                }
-                else
-                {
-                    right_marking = RoadMarkingType.DASHED;
-                }
+                float route_distance = GetRouteLength(route.points);
+                float other_distance = GetRouteLength(closest_right.points);
+                float avg_distance = (route_distance + other_distance) / 2;
+                PrefabMarking marking = new PrefabMarking();
+                marking.type = RoadMarkingType.DASHED;
+                marking.distance = avg_distance;
+                right_marking = marking;
             }
             else
             {
-                if(is_left)
-                {
-                    left_marking = RoadMarkingType.NONE;
-                }
-                else
-                {
-                    right_marking = RoadMarkingType.NONE;
-                }
+                right_marking = new PrefabMarking();
+                right_marking.type = RoadMarkingType.SOLID;
             }
         }
 
-        return new RoadMarkingType[] { left_marking, right_marking };
+        if (closest_left != null)
+        {
+            float closest_left_end_distance = Vector3.Distance(route.points[route.points.Length - 1].ToVector3(), closest_left.points[closest_left.points.Length - 1].ToVector3());
+            float change = closest_left_distance - closest_left_end_distance;
+            if (math.abs(change) < parallel_threshold)
+            {
+                float route_distance = GetRouteLength(route.points);
+                float other_distance = GetRouteLength(closest_left.points);
+                float avg_distance = (route_distance + other_distance) / 2;
+                PrefabMarking marking = new PrefabMarking();
+                marking.type = RoadMarkingType.DASHED;
+                marking.distance = avg_distance;
+                left_marking = marking;
+            }
+            else
+            {
+                right_marking = new PrefabMarking();
+                right_marking.type = RoadMarkingType.SOLID;
+            }
+        }
+
+        return new PrefabMarking[] { left_marking, right_marking };
     }
 
     float GetRouteLength(Point[] points)
@@ -146,7 +196,9 @@ public class PrefabBuilder : MonoBehaviour
                     continue;
                 }
                 
-                GameObject prefab_object = new GameObject("Prefabs " + prefab.uid.ToString());
+                GameObject prefab_object = new GameObject("Prefab " + prefab.uid.ToString());
+                prefab_object.transform.position = prefab.origin_node.PositionTuple();
+                prefab_object.transform.rotation = prefab.origin_node.rotationQuat;
 
                 for(int i = 0; i < prefab.nav_routes.Length; i++)
                 {
@@ -160,9 +212,9 @@ public class PrefabBuilder : MonoBehaviour
                     route_object.transform.parent = prefab_object.transform;
 
                     // Which markings to use
-                    RoadMarkingType[] markings = GetMarkingsForLane(prefab, i);
-                    RoadMarkingType left_marking = markings[0];
-                    RoadMarkingType right_marking = markings[1];
+                    PrefabMarking[] markings = GetMarkingsForLane(prefab, i);
+                    RoadMarkingType left_marking = markings[0].type;
+                    RoadMarkingType right_marking = markings[1].type;
 
                     // Left Side Marking
                     if (left_marking != RoadMarkingType.NONE)
@@ -174,7 +226,7 @@ public class PrefabBuilder : MonoBehaviour
                         if (left_marking == RoadMarkingType.DASHED)
                         {
                             marking_mesh_renderer.material = dashed_marking_material;
-                            marking_mesh_renderer.material.SetFloat("_length", GetRouteLength(route.points));
+                            marking_mesh_renderer.material.SetFloat("_length", markings[0].distance);
                         }
                         else
                         {
@@ -192,7 +244,7 @@ public class PrefabBuilder : MonoBehaviour
                         if (right_marking == RoadMarkingType.DASHED)
                         {
                             marking_mesh_renderer.material = dashed_marking_material;
-                            marking_mesh_renderer.material.SetFloat("_length", GetRouteLength(route.points));
+                            marking_mesh_renderer.material.SetFloat("_length", markings[1].distance);
                         }
                         else
                         {
@@ -200,6 +252,21 @@ public class PrefabBuilder : MonoBehaviour
                         }
                         marking_object.transform.parent = route_object.transform;
                     }
+
+                    // Add a game object for the start and end
+                    // GameObject start_object = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+                    // start_object.name = "Start";
+                    // start_object.transform.position = route.points[0].ToVector3();
+                    // start_object.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
+                    // start_object.transform.parent = route_object.transform;
+                    // start_object.GetComponent<Renderer>().material.color = new Color(0, 1, 0);
+// 
+                    // GameObject end_object = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+                    // end_object.name = "End";
+                    // end_object.transform.position = route.points[route.points.Length - 1].ToVector3();
+                    // end_object.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
+                    // end_object.transform.parent = route_object.transform;
+                    // end_object.GetComponent<Renderer>().material.color = new Color(1, 0, 0);
                 }
 
                 prefab_object.transform.parent = this.transform;
@@ -210,7 +277,7 @@ public class PrefabBuilder : MonoBehaviour
             {
                 if (!prefabs_to_not_remove.Contains(road))
                 {
-                    Destroy(GameObject.Find("Prefabs " + road));
+                    Destroy(GameObject.Find("Prefab " + road));
                     instantiated_prefabs.Remove(road);
                 }
             }
@@ -219,7 +286,7 @@ public class PrefabBuilder : MonoBehaviour
         {
             foreach (int prefab_uid in instantiated_prefabs)
             {
-                Destroy(GameObject.Find("Prefabs " + prefab_uid.ToString()));
+                Destroy(GameObject.Find("Prefab " + prefab_uid.ToString()));
             }
         }
     }

@@ -1,6 +1,13 @@
 using UnityEngine;
 
 [System.Serializable]
+public class PrefabMarking
+{
+    public RoadMarkingType type = RoadMarkingType.NONE;
+    public float distance = 0;
+}
+
+[System.Serializable]
 public class PrefabPoint
 {
     public float x;
@@ -173,6 +180,7 @@ public class Prefab
     public string token;
     public int[] node_uids;
     public int origin_node_index;
+    public Node origin_node;
     public NavRoute[] nav_routes;
     public BoundingBox bounding_box;
 }
