@@ -34,7 +34,7 @@ public class NavRoute
     public Point[] points;
     public float distance;
 
-    public Mesh CreateMeshAlongPoints(float lane_width = 4.5f)
+    public Mesh CreateMeshAlongPoints(Vector3 pivot, float lane_width = 4.5f)
     {
         Mesh mesh = new Mesh();
 
@@ -61,8 +61,8 @@ public class NavRoute
             Vector3 normal = Vector3.Cross(direction, Vector3.down).normalized;
             Vector3 tangent = direction;
 
-            vertices[i * 2] = point + normal * lane_width / 2;
-            vertices[i * 2 + 1] = point - normal * lane_width / 2;
+            vertices[i * 2] = point + normal * lane_width / 2 - pivot;
+            vertices[i * 2 + 1] = point - normal * lane_width / 2 - pivot;
             uv[i * 2] = new Vector2(0, (float)i / (points.Length - 1));
             uv[i * 2 + 1] = new Vector2(1, (float)i / (points.Length - 1));
             normals[i * 2] = normals[i * 2 + 1] = Vector3.down;
@@ -90,7 +90,7 @@ public class NavRoute
         return mesh;
     }
 
-    public Mesh CreateMarkingMesh(Side side, RoadMarkingType type, float lane_width = 4.5f, float marking_width = 0.25f)
+    public Mesh CreateMarkingMesh(Side side, RoadMarkingType type, Vector3 pivot, float lane_width = 4.5f, float marking_width = 0.25f)
     {
         Mesh mesh = new Mesh();
 
@@ -133,6 +133,7 @@ public class NavRoute
             // Determine the position of the marking based on the side
             float sideMultiplier = (side == Side.LEFT) ? -1f : 1f;
             Vector3 markingPosition = point + normal * (lane_width / 2 + offset);
+            markingPosition -= pivot;
 
             vertices[i * 2] = markingPosition + normal * (sideMultiplier * marking_width / 2);
             vertices[i * 2 + 1] = markingPosition - normal * (sideMultiplier * marking_width / 2);

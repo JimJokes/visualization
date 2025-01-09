@@ -37,7 +37,7 @@ public class Node
     public float y;
     public float z;
     public float rotation;
-    public Quaternion rotationQuat;
+    public float[] rotationQuat;
     public string forward_item_uid;
     public string backward_item_uid;
     public int sector_x;
@@ -47,6 +47,6 @@ public class Node
 
     public Vector3 PositionTuple()
     {
-        return new Vector3(x, z, y);
+        return new Vector3(y, z, x);
     }
 }

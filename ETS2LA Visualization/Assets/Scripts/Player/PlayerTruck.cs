@@ -21,7 +21,7 @@ public class PlayerTruck : MonitoredBehaviour
             ), 0.2f);
 
             transform.DORotateQuaternion(Quaternion.Euler(
-                backend.truck.transform.ry, 
+                -backend.truck.transform.ry, 
                 -backend.truck.transform.rx - 90, 
                 backend.truck.transform.rz
             ), 0.2f);

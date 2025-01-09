@@ -156,13 +156,20 @@ public class RoadBuilder : MonoBehaviour
                 instantiated_roads.Add(road.uid);
             }
 
+            List<int> roads_to_remove = new List<int>();
+
             foreach (int road in instantiated_roads)
             {
                 if (!roads_to_not_remove.Contains(road))
                 {
-                    Destroy(GameObject.Find("Road " + road));
-                    instantiated_roads.Remove(road);
+                    roads_to_remove.Add(road);
                 }
+            }
+
+            foreach (int road in roads_to_remove)
+            {
+                Destroy(GameObject.Find("Road " + road.ToString()));
+                instantiated_roads.Remove(road);
             }
         } 
         else
