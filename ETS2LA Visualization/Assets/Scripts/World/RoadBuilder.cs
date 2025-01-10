@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class RoadBuilder : MonoBehaviour
 {
-    private List<int> instantiated_roads = new List<int>();
+    private List<string> instantiated_roads = new List<string>();
     public BackendWebrequests backend;
     public Material base_material;
     public Material solid_marking_material;
@@ -75,7 +75,7 @@ public class RoadBuilder : MonoBehaviour
     {
         if (backend.roads_count > 0)
         {
-            List<int> roads_to_not_remove = new List<int>();
+            List<string> roads_to_not_remove = new List<string>();
 
             foreach (Road road in backend.map.roads)
             {
@@ -85,7 +85,7 @@ public class RoadBuilder : MonoBehaviour
                     continue;
                 }
                 
-                GameObject road_object = new GameObject("Road " + road.uid.ToString());
+                GameObject road_object = new GameObject("Road " + road.uid);
                 
                 Vector3 average = new Vector3(0, 0, 0);
                 for (int i = 0; i < road.points.Length; i++)
@@ -121,7 +121,7 @@ public class RoadBuilder : MonoBehaviour
                         marking_mesh_renderer.material.SetFloat("_length", road.length);
                         if (left_marking == RoadMarkingType.DASHED_SHORT)
                         {
-                            marking_mesh_renderer.material.SetFloat("_dashes_per_meter", 0.4f);
+                            marking_mesh_renderer.material.SetFloat("_dashes_per_meter", 0.3f);
                         }
                     }
                     else
@@ -141,7 +141,7 @@ public class RoadBuilder : MonoBehaviour
                         marking_mesh_renderer.material.SetFloat("_length", road.length);
                         if (right_marking == RoadMarkingType.DASHED_SHORT)
                         {
-                            marking_mesh_renderer.material.SetFloat("_dashes_per_meter", 0.4f);
+                            marking_mesh_renderer.material.SetFloat("_dashes_per_meter", 0.3f);
                         }
                     }
                     else
@@ -156,9 +156,9 @@ public class RoadBuilder : MonoBehaviour
                 instantiated_roads.Add(road.uid);
             }
 
-            List<int> roads_to_remove = new List<int>();
+            List<string> roads_to_remove = new List<string>();
 
-            foreach (int road in instantiated_roads)
+            foreach (string road in instantiated_roads)
             {
                 if (!roads_to_not_remove.Contains(road))
                 {
@@ -166,17 +166,17 @@ public class RoadBuilder : MonoBehaviour
                 }
             }
 
-            foreach (int road in roads_to_remove)
+            foreach (string road in roads_to_remove)
             {
-                Destroy(GameObject.Find("Road " + road.ToString()));
+                Destroy(GameObject.Find("Road " + road));
                 instantiated_roads.Remove(road);
             }
         } 
         else
         {
-            foreach (int road in instantiated_roads)
+            foreach (string road in instantiated_roads)
             {
-                Destroy(GameObject.Find("Road " + road.ToString()));
+                Destroy(GameObject.Find("Road " + road));
             }
         }
     }

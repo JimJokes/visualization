@@ -78,11 +78,6 @@ public class BackendWebrequests : MonitoredBehaviour
                         }
                     }
 
-                    foreach (string lane in lane_types)
-                    {
-                        Debug.Log(lane);
-                    }
-
                 }
                 else if(tag == "map_update_time")
                 {

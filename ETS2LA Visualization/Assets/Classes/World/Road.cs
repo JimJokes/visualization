@@ -72,7 +72,7 @@ public class Lane
         return mesh;
     }
 
-    public Mesh CreateMarkingMesh(Side side, RoadMarkingType type, float lane_width = 4.5f, float marking_width = 0.25f)
+    public Mesh CreateMarkingMesh(Side side, RoadMarkingType type, float lane_width = 4.5f, float marking_width = 0.2f)
     {
         Mesh mesh = new Mesh();
 
@@ -164,7 +164,7 @@ public class RoadLook
 [System.Serializable]
 public class Road
 {
-    public int uid;
+    public string uid;
     public int type;
     public int x;
     public int y;

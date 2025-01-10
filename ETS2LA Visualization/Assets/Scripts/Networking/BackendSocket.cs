@@ -2,8 +2,6 @@ using UnityEngine;
 using MikeSchweitzer.WebSocket;
 using Baracuda.Monitoring;
 using System.Collections.Generic;
-using UnityEngine.Rendering.LookDev;
-using UnityEngine.AI;
 
 public class BackendSocket : MonitoredBehaviour
 {
@@ -25,7 +23,7 @@ public class BackendSocket : MonitoredBehaviour
     #endregion
 
     #region Backend Setup
-    public int[] subscribed_channels = new int[] { 1 };
+    public int[] subscribed_channels = new int[] { 1, 2 };
 
     class SubscribeChannel {
         public int channel;
@@ -60,9 +58,22 @@ public class BackendSocket : MonitoredBehaviour
     public class TransformResponse : BaseResponse { public new TransformResult result; }
     #endregion
 
+    # region Channel 2
+    [System.Serializable]
+    public class SteeringData
+    {
+        public Point[] points;
+    }
+    [System.Serializable]
+    public class SteeringResult : BaseResult { public new SteeringData data; }
+    [System.Serializable]
+    public class SteeringResponse : BaseResponse { public new SteeringResult result; }
+    #endregion
+
     # region Truck
     public class Truck{
         public Transform transform;
+        public Vector3[] steering;
     }
     public Truck truck = new Truck();
     #endregion 
@@ -147,6 +158,17 @@ public class BackendSocket : MonitoredBehaviour
                     TransformResponse truck_response = JsonUtility.FromJson<TransformResponse>(message);
                     TransformResult truck_result = truck_response.result;
                     truck.transform = truck_result.data;
+                    break;
+
+                case 2:
+                    SteeringResponse steering_response = JsonUtility.FromJson<SteeringResponse>(message);
+                    SteeringResult steering_result = steering_response.result;
+                    Vector3[] points = new Vector3[steering_result.data.points.Length];
+                    for (int i = 0; i < steering_result.data.points.Length; i++)
+                    {
+                        points[i] = steering_result.data.points[i].ToVector3() + Vector3.up * 0.1f;
+                    }
+                    truck.steering = points;
                     break;
             }
 

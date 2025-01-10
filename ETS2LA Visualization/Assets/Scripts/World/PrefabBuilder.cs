@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class PrefabBuilder : MonoBehaviour
 {
-    private List<int> instantiated_prefabs = new List<int>();
+    private List<string> instantiated_prefabs = new List<string>();
     public BackendWebrequests backend;
     public Material base_material;
     public Material solid_marking_material;
@@ -55,7 +55,7 @@ public class PrefabBuilder : MonoBehaviour
 
                 // Triangle ABC, angle is either 90 or 270 degrees depending on the side (right, left)
                 float angle = math.atan2((B.y - A.y) * (C.x - A.x) - (B.x - A.x) * (C.y - A.y), (B.x - A.x) * (C.x - A.x) + (B.y - A.y) * (C.y - A.y));
-                Debug.Log("Prefab " + prefab.uid + " Route " + route_index + " Other Route " + Array.IndexOf(prefab.nav_routes, other_route) + " Angle: " + math.degrees(angle));
+                // Debug.Log("Prefab " + prefab.uid + " Route " + route_index + " Other Route " + Array.IndexOf(prefab.nav_routes, other_route) + " Angle: " + math.degrees(angle));
 
                 if (angle < 0)
                 {
@@ -83,7 +83,7 @@ public class PrefabBuilder : MonoBehaviour
                 Vector2 C = new Vector2(other_route.points[other_route.points.Length - 1].x, other_route.points[other_route.points.Length - 1].z);
             
                 float angle = math.atan2((B.y - A.y) * (C.x - A.x) - (B.x - A.x) * (C.y - A.y), (B.x - A.x) * (C.x - A.x) + (B.y - A.y) * (C.y - A.y));
-                Debug.Log("Prefab " + prefab.uid + " Route " + route_index + " Other Route " + Array.IndexOf(prefab.nav_routes, other_route) + " Angle: " + math.degrees(angle) + " Distance: " + start_distance);
+                // Debug.Log("Prefab " + prefab.uid + " Route " + route_index + " Other Route " + Array.IndexOf(prefab.nav_routes, other_route) + " Angle: " + math.degrees(angle) + " Distance: " + start_distance);
 
                 if (angle > 0)
                 {
@@ -109,7 +109,7 @@ public class PrefabBuilder : MonoBehaviour
 
                     float angle = math.atan2((B.y - A.y) * (C.x - A.x) - (B.x - A.x) * (C.y - A.y), (B.x - A.x) * (C.x - A.x) + (B.y - A.y) * (C.y - A.y));
 
-                    Debug.Log("Prefab " + prefab.uid + " Route " + route_index + " Other Route " + Array.IndexOf(prefab.nav_routes, other_route) + " Angle: " + math.degrees(angle) + " Distance: " + start_distance);
+                    // Debug.Log("Prefab " + prefab.uid + " Route " + route_index + " Other Route " + Array.IndexOf(prefab.nav_routes, other_route) + " Angle: " + math.degrees(angle) + " Distance: " + start_distance);
 
                     if (angle < 0)
                     {
@@ -186,7 +186,7 @@ public class PrefabBuilder : MonoBehaviour
     {
         if (backend.prefabs_count > 0)
         {
-            List<int> prefabs_to_not_remove = new List<int>();
+            List<string> prefabs_to_not_remove = new List<string>();
 
             foreach (Prefab prefab in backend.map.prefabs)
             {
@@ -196,7 +196,7 @@ public class PrefabBuilder : MonoBehaviour
                     continue;
                 }
                 
-                GameObject prefab_object = new GameObject("Prefab " + prefab.uid.ToString());
+                GameObject prefab_object = new GameObject("Prefab " + prefab.uid);
                 prefab_object.transform.parent = this.transform;
                 prefab_object.transform.position = prefab.origin_node.PositionTuple();
 
@@ -255,6 +255,18 @@ public class PrefabBuilder : MonoBehaviour
                         }
                     }
 
+                    // Start Node and end node spheres
+                    GameObject start_node = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+                    start_node.transform.parent = route_object.transform;
+                    start_node.transform.position = route.points[0].ToVector3();
+                    start_node.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
+                    start_node.GetComponent<MeshRenderer>().material.color = Color.green;
+
+                    GameObject end_node = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+                    end_node.transform.parent = route_object.transform;
+                    end_node.transform.position = route.points[route.points.Length - 1].ToVector3();
+                    end_node.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
+                    end_node.GetComponent<MeshRenderer>().material.color = Color.red;
                 }
 
                 instantiated_prefabs.Add(prefab.uid);
@@ -277,9 +289,9 @@ public class PrefabBuilder : MonoBehaviour
                 prefab_object.transform.rotation = pitchQuat;
             }
 
-            List<int> prefabs_to_remove = new List<int>();
+            List<string> prefabs_to_remove = new List<string>();
 
-            foreach (int prefab_uid in instantiated_prefabs)
+            foreach (string prefab_uid in instantiated_prefabs)
             {
                 if (!prefabs_to_not_remove.Contains(prefab_uid))
                 {
@@ -287,17 +299,17 @@ public class PrefabBuilder : MonoBehaviour
                 }
             }
 
-            foreach (int prefab_uid in prefabs_to_remove)
+            foreach (string prefab_uid in prefabs_to_remove)
             {
-                Destroy(GameObject.Find("Prefab " + prefab_uid.ToString()));
+                Destroy(GameObject.Find("Prefab " + prefab_uid));
                 instantiated_prefabs.Remove(prefab_uid);
             }
         } 
         else
         {
-            foreach (int prefab_uid in instantiated_prefabs)
+            foreach (string prefab_uid in instantiated_prefabs)
             {
-                Destroy(GameObject.Find("Prefab " + prefab_uid.ToString()));
+                Destroy(GameObject.Find("Prefab " + prefab_uid));
             }
         }
     }

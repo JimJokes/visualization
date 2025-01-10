@@ -90,7 +90,7 @@ public class NavRoute
         return mesh;
     }
 
-    public Mesh CreateMarkingMesh(Side side, RoadMarkingType type, Vector3 pivot, float lane_width = 4.5f, float marking_width = 0.25f)
+    public Mesh CreateMarkingMesh(Side side, RoadMarkingType type, Vector3 pivot, float lane_width = 4.5f, float marking_width = 0.2f)
     {
         Mesh mesh = new Mesh();
 
@@ -170,7 +170,7 @@ public class NavRoute
 [System.Serializable]
 public class Prefab
 {
-    public int uid;
+    public string uid;
     public int type;
     public int x;
     public int y;
@@ -179,7 +179,7 @@ public class Prefab
     public int dlc_guard;
     public bool hidden;
     public string token;
-    public int[] node_uids;
+    public string[] node_uids;
     public int origin_node_index;
     public Node origin_node;
     public NavRoute[] nav_routes;

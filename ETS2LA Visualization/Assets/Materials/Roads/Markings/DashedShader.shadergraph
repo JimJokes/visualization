@@ -767,7 +767,7 @@
     "m_ShaderOutputName": "InMinMax",
     "m_StageCapability": 3,
     "m_Value": {
-        "x": 0.20000000298023225,
+        "x": 0.07999999821186066,
         "y": 1.0
     },
     "m_DefaultValue": {
@@ -1337,9 +1337,9 @@
     "m_ShaderOutputName": "ColorB",
     "m_StageCapability": 3,
     "m_Value": {
-        "x": 0.6117647290229797,
-        "y": 0.6117647290229797,
-        "z": 0.6117647290229797
+        "x": 0.4274509847164154,
+        "y": 0.4274509847164154,
+        "z": 0.4274509847164154
     },
     "m_DefaultValue": {
         "x": 0.699999988079071,
@@ -1730,7 +1730,7 @@
     "m_StageCapability": 3,
     "m_Value": {
         "x": 0.0,
-        "y": 10.0
+        "y": 67.91000366210938
     },
     "m_DefaultValue": {
         "x": 0.0,
