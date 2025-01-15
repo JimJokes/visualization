@@ -2,6 +2,7 @@ using UnityEngine;
 using MikeSchweitzer.WebSocket;
 using Baracuda.Monitoring;
 using System.Collections.Generic;
+using DG.Tweening;
 
 public class BackendSocket : MonitoredBehaviour
 {
@@ -23,7 +24,7 @@ public class BackendSocket : MonitoredBehaviour
     #endregion
 
     #region Backend Setup
-    public int[] subscribed_channels = new int[] { 1, 2 };
+    public int[] subscribed_channels = new int[] { 1, 2, 3 };
 
     class SubscribeChannel {
         public int channel;
@@ -70,10 +71,29 @@ public class BackendSocket : MonitoredBehaviour
     public class SteeringResponse : BaseResponse { public new SteeringResult result; }
     #endregion
 
+    # region Channel 3
+    [System.Serializable]
+    public class TruckState
+    {
+        public float speed;
+        public float speed_limit;
+        public float cruise_control;
+        public float target_speed;
+        public float throttle;
+        public float brake;
+    }
+
+    [System.Serializable]
+    public class StateResult : BaseResult { public new TruckState data; }
+    [System.Serializable]
+    public class StateResponse : BaseResponse { public new StateResult result; }
+    #endregion
+
     # region Truck
     public class Truck{
         public Transform transform;
         public Vector3[] steering;
+        public TruckState state;
     }
     public Truck truck = new Truck();
     #endregion 
@@ -92,6 +112,7 @@ public class BackendSocket : MonitoredBehaviour
 
     private new void Awake()
     {
+        DOTween.SetTweensCapacity(2000, 100);
         connection.StateChanged += OnStateChanged;
         connection.ErrorMessageReceived += OnErrorMessageReceived;
         Connect();
@@ -107,6 +128,7 @@ public class BackendSocket : MonitoredBehaviour
 
     private void OnConnect(WebSocketConnection connection){
         Debug.Log("Successfully connected to " + url);
+        Debug.Log("Connecting to " + subscribed_channels.Length + " channels...");
         for (int i = 0; i < subscribed_channels.Length; i++)
         {
             SubscribeChannel subscribe = new SubscribeChannel();
@@ -151,7 +173,6 @@ public class BackendSocket : MonitoredBehaviour
 
         while (connection.TryRemoveIncomingMessage(out string message)){
             BaseResponse response = JsonUtility.FromJson<BaseResponse>(message);
-
             switch (response.channel)
             {
                 case 1:
@@ -163,13 +184,24 @@ public class BackendSocket : MonitoredBehaviour
                 case 2:
                     SteeringResponse steering_response = JsonUtility.FromJson<SteeringResponse>(message);
                     SteeringResult steering_result = steering_response.result;
-                    Vector3[] points = new Vector3[steering_result.data.points.Length];
-                    for (int i = 0; i < steering_result.data.points.Length; i++)
+                    try
                     {
-                        points[i] = steering_result.data.points[i].ToVector3() + Vector3.up * 0.1f;
-                    }
-                    truck.steering = points;
+                        Vector3[] points = new Vector3[steering_result.data.points.Length];
+                        for (int i = 0; i < steering_result.data.points.Length; i++)
+                        {
+                            points[i] = steering_result.data.points[i].ToVector3() + Vector3.up * 0.1f;
+                        }
+                        truck.steering = points;
+                    } catch {}
+
                     break;
+
+                case 3:
+                    StateResponse state_response = JsonUtility.FromJson<StateResponse>(message);
+                    StateResult state_result = state_response.result;
+                    truck.state = state_result.data;
+                    break;
+                    
             }
 
             messages.Add(message);

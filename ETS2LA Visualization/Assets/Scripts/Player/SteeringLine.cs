@@ -9,6 +9,14 @@ public class SteeringLine : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (backend.truck == null)
+        {
+            return;
+        }
+        if (backend.truck.state == null)
+        {
+            return;
+        }
         if(backend.truck.steering != last_data)
         {
             last_data = backend.truck.steering;
