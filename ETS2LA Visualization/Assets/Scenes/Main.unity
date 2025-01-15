@@ -491,12 +491,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   lerp_time: 1
   backend: {fileID: 1028169603}
-  offset: {x: 15, y: 10.7, z: 0}
-  offset_rotation: {x: 25, y: -90, z: 0}
-  stopped_offset: {x: 23, y: 18, z: 0}
-  stopped_offset_rotation: {x: 30, y: -90, z: 0}
-  reverse_offset: {x: -15, y: 10.7, z: 0}
-  reverse_offset_rotation: {x: 25, y: 90, z: 0}
+  offset: {x: 0, y: 10.7, z: -15}
+  offset_rotation: {x: 25, y: 0, z: 0}
+  stopped_offset: {x: 0, y: 18, z: -23}
+  stopped_offset_rotation: {x: 30, y: 0, z: 0}
+  reverse_offset: {x: 0, y: 10.7, z: 15}
+  reverse_offset_rotation: {x: 25, y: 180, z: 0}
+  at_0_speed: 55
+  at_80_speed: 75
 --- !u!1 &410087039
 GameObject:
   m_ObjectHideFlags: 0

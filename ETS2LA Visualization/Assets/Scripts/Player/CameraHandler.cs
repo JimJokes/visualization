@@ -3,7 +3,7 @@ using Baracuda.Monitoring;
 using DG.Tweening;
 using UnityEngine;
 
-public class CameraOffsetHandler : MonitoredBehaviour
+public class CameraHandler : MonitoredBehaviour
 {
 
     [Header("Settings")]
@@ -18,6 +18,9 @@ public class CameraOffsetHandler : MonitoredBehaviour
     [Header("Reverse Offsets")]
     public Vector3 reverse_offset = new Vector3(0, 0, 0);
     public Vector3 reverse_offset_rotation = new Vector3(0, 0, 0);
+    [Header("FOV")]
+    public float at_0_speed = 55;
+    public float at_80_speed = 75;
 
     [Monitor]
     string state = "normal";
@@ -55,5 +58,8 @@ public class CameraOffsetHandler : MonitoredBehaviour
             transform.DOLocalMove(offset, lerp_time);
             transform.DOLocalRotate(offset_rotation, lerp_time);
         }
+
+        float speed = backend.truck.state.speed * 3.6f;
+        Camera.main.fieldOfView = Mathf.Lerp(at_0_speed, at_80_speed, speed / 80);
     }
 }
