@@ -116,7 +116,7 @@ public class NavRoute
         {
             Vector3 up = (side == Side.LEFT) ? Vector3.up : Vector3.down;
 
-            Vector3 point = points[i].ToVector3() + Vector3.up * 0.01f; // Slightly above the road
+            Vector3 point = points[i].ToVector3() + Vector3.up * 0.04f; // Slightly above the road
             Vector3 direction;
 
             if (i < points.Length - 1)
