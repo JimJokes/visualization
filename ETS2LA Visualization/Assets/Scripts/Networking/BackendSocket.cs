@@ -3,6 +3,7 @@ using MikeSchweitzer.WebSocket;
 using Baracuda.Monitoring;
 using System.Collections.Generic;
 using DG.Tweening;
+using UnityEngine.UIElements;
 
 public class BackendSocket : MonitoredBehaviour
 {
@@ -69,6 +70,7 @@ public class BackendSocket : MonitoredBehaviour
     public class SteeringResult : BaseResult { public new SteeringData data; }
     [System.Serializable]
     public class SteeringResponse : BaseResponse { public new SteeringResult result; }
+    float last_steering_point_added = 0;
     #endregion
 
     # region Channel 3
@@ -92,7 +94,7 @@ public class BackendSocket : MonitoredBehaviour
     # region Truck
     public class Truck{
         public Transform transform;
-        public Vector3[] steering;
+        public Vector3[] steering = new Vector3[0];
         public TruckState state;
     }
     public Truck truck = new Truck();
@@ -191,7 +193,18 @@ public class BackendSocket : MonitoredBehaviour
                         {
                             points[i] = steering_result.data.points[i].ToVector3() + Vector3.up * 0.1f;
                         }
-                        truck.steering = points;
+                        if(points.Length > truck.steering.Length)
+                        {
+                            if(Time.time - last_steering_point_added > 0.05f)
+                            {
+                                last_steering_point_added = Time.time;
+                                truck.steering = points[0..(truck.steering.Length + 1)];
+                            }
+                        }
+                        else
+                        {
+                            truck.steering = points;
+                        }
                     } catch {}
 
                     break;
@@ -209,7 +222,7 @@ public class BackendSocket : MonitoredBehaviour
 
         if (Time.time - last_profile > profiling_time)
         {
-            packets_per_second = messages.Count;
+            packets_per_second = messages.Count / subscribed_channels.Length;
             messages.Clear();
             last_profile = Time.time;
         }

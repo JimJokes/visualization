@@ -1,6 +1,6 @@
-using System.ComponentModel;
 using Baracuda.Monitoring;
 using DG.Tweening;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class CameraHandler : MonitoredBehaviour
@@ -24,6 +24,23 @@ public class CameraHandler : MonitoredBehaviour
 
     [Monitor]
     string state = "normal";
+    [Monitor]
+    Vector3 additional_rotation_offset = new Vector3(0, 0, 0);
+
+    Vector3 GetAverageSteeringPoint(){
+        Vector3[] steering = backend.truck.steering;
+        Vector3 average = new Vector3(0, 0, 0);
+        for (int i = 0; i < steering.Length; i++)
+        {
+            average += steering[i];
+        }
+        return average /= steering.Length;
+    }
+
+    Vector3 RotatePointAroundPivot(Vector3 point, Vector3 pivot, Vector3 angles)
+    {
+        return Quaternion.Euler(angles) * (point - pivot) + pivot;
+    }
 
     // Update is called once per frame
     void Update()
@@ -36,6 +53,20 @@ public class CameraHandler : MonitoredBehaviour
         {
             return;
         }
+        if (backend.truck.steering == null)
+        {
+            return;
+        }
+
+        Vector3 additional_offset = new Vector3(0, 0, 0);
+        Vector3 average_point = GetAverageSteeringPoint();
+        
+        // Add the offset to point towards the average steering point
+        Vector3 temp_additional_rotation_offset = new Vector3(0, Quaternion.LookRotation((average_point - transform.parent.position).normalized, Vector3.up).eulerAngles.y - transform.rotation.eulerAngles.y, 0);
+        if (!float.IsNaN(Vector3.Distance(average_point, transform.parent.position)))
+        {
+            additional_rotation_offset = Vector3.Lerp(additional_rotation_offset, temp_additional_rotation_offset, Time.deltaTime * 0.01f * Vector3.Distance(average_point, transform.parent.position));
+        }
 
         bool is_stationary = backend.truck.state.speed < 0.5f && backend.truck.state.speed > -0.5f;
         bool is_reversing = backend.truck.state.speed < -0.5f;
@@ -43,20 +74,29 @@ public class CameraHandler : MonitoredBehaviour
         if(is_stationary)
         {
             state = "stationary";
-            transform.DOLocalMove(stopped_offset, lerp_time);
-            transform.DOLocalRotate(stopped_offset_rotation, lerp_time);
+            // Rotate the stopped offset to match the new added rotation
+            additional_offset += RotatePointAroundPivot(stopped_offset, Vector3.zero, additional_rotation_offset) - stopped_offset;
+
+            transform.DOLocalMove(stopped_offset + additional_offset, lerp_time);
+            transform.DOLocalRotate(stopped_offset_rotation + additional_rotation_offset, lerp_time);
         }
         else if (is_reversing)
         {
             state = "reversing";
-            transform.DOLocalMove(reverse_offset, lerp_time);
-            transform.DOLocalRotate(reverse_offset_rotation, lerp_time);
+            // Rotate the stopped offset to match the new added rotation
+            additional_offset += RotatePointAroundPivot(reverse_offset, Vector3.zero, additional_rotation_offset) - reverse_offset;
+
+            transform.DOLocalMove(reverse_offset + additional_offset, lerp_time);
+            transform.DOLocalRotate(reverse_offset_rotation + additional_rotation_offset, lerp_time);
         }
         else
         {
             state = "normal";
-            transform.DOLocalMove(offset, lerp_time);
-            transform.DOLocalRotate(offset_rotation, lerp_time);
+            // Rotate the stopped offset to match the new added rotation
+            additional_offset += RotatePointAroundPivot(offset, Vector3.zero, additional_rotation_offset) - offset;
+            
+            transform.DOLocalMove(offset + additional_offset, lerp_time);
+            transform.DOLocalRotate(offset_rotation + additional_rotation_offset, lerp_time);
         }
 
         float speed = backend.truck.state.speed * 3.6f;

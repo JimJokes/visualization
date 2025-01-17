@@ -13,7 +13,7 @@ public class SteeringLine : MonoBehaviour
         {
             return;
         }
-        if (backend.truck.state == null)
+        if (backend.truck.steering == null)
         {
             return;
         }
