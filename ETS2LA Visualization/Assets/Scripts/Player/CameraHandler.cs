@@ -68,6 +68,15 @@ public class CameraHandler : MonitoredBehaviour
             additional_rotation_offset = Vector3.Lerp(additional_rotation_offset, temp_additional_rotation_offset, Time.deltaTime * 0.01f * Vector3.Distance(average_point, transform.parent.position));
         }
 
+        if (additional_rotation_offset.y > 90)
+        {
+            additional_rotation_offset.y -= 180;
+        }
+        else if (additional_rotation_offset.y < -90)
+        {
+            additional_rotation_offset.y += 180;
+        }
+
         bool is_stationary = backend.truck.state.speed < 0.5f && backend.truck.state.speed > -0.5f;
         bool is_reversing = backend.truck.state.speed < -0.5f;
 

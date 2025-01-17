@@ -71,6 +71,7 @@ public class BackendSocket : MonitoredBehaviour
     [System.Serializable]
     public class SteeringResponse : BaseResponse { public new SteeringResult result; }
     float last_steering_point_added = 0;
+    Vector3[] last_steering = new Vector3[0];
     #endregion
 
     # region Channel 3
@@ -193,18 +194,7 @@ public class BackendSocket : MonitoredBehaviour
                         {
                             points[i] = steering_result.data.points[i].ToVector3() + Vector3.up * 0.1f;
                         }
-                        if(points.Length > truck.steering.Length)
-                        {
-                            if(Time.time - last_steering_point_added > 0.05f)
-                            {
-                                last_steering_point_added = Time.time;
-                                truck.steering = points[0..(truck.steering.Length + 1)];
-                            }
-                        }
-                        else
-                        {
-                            truck.steering = points;
-                        }
+                        last_steering = points;
                     } catch {}
 
                     break;
@@ -226,6 +216,25 @@ public class BackendSocket : MonitoredBehaviour
             messages.Clear();
             last_profile = Time.time;
         }
+
+        if(last_steering.Length > truck.steering.Length)
+        {
+            if(Time.time - last_steering_point_added > 0.05f)
+            {
+                last_steering_point_added = Time.time;
+                truck.steering = last_steering[0..(truck.steering.Length + 1)];
+            }
+            else
+            {
+                // Smoothly interpolate the last point
+                truck.steering[truck.steering.Length - 1] = Vector3.Lerp(truck.steering[truck.steering.Length - 1], last_steering[truck.steering.Length - 1], Time.deltaTime * 10);
+            }
+        }
+        else
+        {
+            truck.steering = last_steering;
+        }
+
     }
 
 }
