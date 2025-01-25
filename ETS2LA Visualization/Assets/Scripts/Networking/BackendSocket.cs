@@ -25,7 +25,7 @@ public class BackendSocket : MonitoredBehaviour
     #endregion
 
     #region Backend Setup
-    public int[] subscribed_channels = new int[] { 1, 2, 3 };
+    public int[] subscribed_channels = new int[] { 1, 2, 3, 4 };
 
     class SubscribeChannel {
         public int channel;
@@ -92,6 +92,18 @@ public class BackendSocket : MonitoredBehaviour
     public class StateResponse : BaseResponse { public new StateResult result; }
     #endregion
 
+    # region Channel 4
+    [System.Serializable]
+    public class TrafficData
+    {
+        public VehicleClass[] vehicles;
+    }
+    [System.Serializable]
+    public class TrafficResult : BaseResult { public new TrafficData data; }
+    [System.Serializable]
+    public class TrafficResponse : BaseResponse { public new TrafficResult result; }
+    #endregion
+
     # region Truck
     public class Truck{
         public Transform transform;
@@ -100,6 +112,14 @@ public class BackendSocket : MonitoredBehaviour
     }
     public Truck truck = new Truck();
     #endregion 
+
+    # region World
+    public class World{
+        public VehicleClass[] traffic = new VehicleClass[0];
+    }
+    public World world = new World();
+    #endregion
+
 
     public void Connect()
     {
@@ -116,6 +136,11 @@ public class BackendSocket : MonitoredBehaviour
     private new void Awake()
     {
         DOTween.SetTweensCapacity(2000, 100);
+
+        WebSocketConfig config = new WebSocketConfig();
+        config.MaxReceiveBytes = 1024 * 1024;
+        connection.DesiredConfig = config;
+
         connection.StateChanged += OnStateChanged;
         connection.ErrorMessageReceived += OnErrorMessageReceived;
         Connect();
@@ -204,7 +229,12 @@ public class BackendSocket : MonitoredBehaviour
                     StateResult state_result = state_response.result;
                     truck.state = state_result.data;
                     break;
-                    
+
+                case 4:
+                    TrafficResponse traffic_response = JsonUtility.FromJson<TrafficResponse>(message);
+                    TrafficResult traffic_result = traffic_response.result;
+                    world.traffic = traffic_result.data.vehicles;
+                    break;
             }
 
             messages.Add(message);

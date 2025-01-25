@@ -712,6 +712,7 @@ Transform:
   m_Children:
   - {fileID: 1350641179}
   - {fileID: 1008680651}
+  - {fileID: 1809503196}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &832575517
@@ -848,7 +849,7 @@ MonoBehaviour:
   url: ws://localhost:37522
   connection_retry_time: 5
   profiling_time: 1
-  subscribed_channels: 010000000200000003000000
+  subscribed_channels: 01000000020000000300000004000000
 --- !u!4 &1028169604
 Transform:
   m_ObjectHideFlags: 0
@@ -1216,6 +1217,56 @@ Transform:
   - {fileID: 188600712}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1809503195
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1809503196}
+  - component: {fileID: 1809503197}
+  m_Layer: 0
+  m_Name: Traffic
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1809503196
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1809503195}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 481408046}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1809503197
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1809503195}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b894578c47cec82448cc311c5f81afde, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  vehiclePrefab: {fileID: 5916070306417407855, guid: 05f27616e48c1f84a85efc6cd75a4e52, type: 3}
+  trailerPrefab: {fileID: 6748089973021787999, guid: a16966639ebb21b488277a739cd313e0, type: 3}
+  vehicleCount: 20
+  trailerCount: 40
+  vehicles: []
+  trailers: []
 --- !u!1 &2083485856
 GameObject:
   m_ObjectHideFlags: 0
