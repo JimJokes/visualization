@@ -4,6 +4,7 @@ using Baracuda.Monitoring;
 using System.Collections.Generic;
 using DG.Tweening;
 using UnityEngine.UIElements;
+using Unity.VisualScripting;
 
 public class BackendSocket : MonitoredBehaviour
 {
@@ -210,6 +211,17 @@ public class BackendSocket : MonitoredBehaviour
         {
             Debug.LogError("Connection lost, retrying...");
             Connect();
+        }
+
+        int count = 0;
+        foreach(var message in connection.IncomingMessages)
+        {
+            count++;
+        }
+
+        if(count < subscribed_channels.Length)
+        {
+            return;
         }
 
         while (connection.TryRemoveIncomingMessage(out string message)){

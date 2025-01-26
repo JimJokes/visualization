@@ -23,7 +23,7 @@ public class PlayerTruck : MonitoredBehaviour
             ), 0.2f);
 
             transform.DORotateQuaternion(Quaternion.Euler(
-                -backend.truck.transform.ry, 
+                backend.truck.transform.ry, 
                 -backend.truck.transform.rx - 90, 
                 backend.truck.transform.rz
             ), 0.2f);
@@ -50,7 +50,6 @@ public class PlayerTruck : MonitoredBehaviour
                     for (int j = 0; j < backend.truck.trailers.Length; j++)
                     {
                         connected_trailers[j] = Instantiate(trailer_prefab);
-                        connected_trailers[j].transform.SetParent(transform);
                         connected_trailers[j].transform.GetChild(0).localScale = new Vector3(1, 1.33f, 2);
                     }
                 }
@@ -77,7 +76,7 @@ public class PlayerTruck : MonitoredBehaviour
                 Vector3 api_rotation = new Vector3(
                     backend.truck.trailers[i].ry, 
                     -backend.truck.trailers[i].rx + 90, 
-                    backend.truck.trailers[i].rz
+                    -backend.truck.trailers[i].rz
                 );
                 trailer.transform.DORotate(api_rotation, 0.2f);
             }
