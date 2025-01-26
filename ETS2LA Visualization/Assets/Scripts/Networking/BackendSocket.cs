@@ -104,11 +104,24 @@ public class BackendSocket : MonitoredBehaviour
     public class TrafficResponse : BaseResponse { public new TrafficResult result; }
     #endregion
 
+    # region Channel 5
+    [System.Serializable]
+    public class TrailerData
+    {
+        public ConnectedTrailer[] trailers;
+    }
+    [System.Serializable]
+    public class TrailerResult : BaseResult { public new TrailerData data; }
+    [System.Serializable]
+    public class TrailerResponse : BaseResponse { public new TrailerResult result; }
+    #endregion
+
     # region Truck
     public class Truck{
         public Transform transform;
         public Vector3[] steering = new Vector3[0];
         public TruckState state;
+        public ConnectedTrailer[] trailers = new ConnectedTrailer[0];
     }
     public Truck truck = new Truck();
     #endregion 
@@ -234,6 +247,12 @@ public class BackendSocket : MonitoredBehaviour
                     TrafficResponse traffic_response = JsonUtility.FromJson<TrafficResponse>(message);
                     TrafficResult traffic_result = traffic_response.result;
                     world.traffic = traffic_result.data.vehicles;
+                    break;
+
+                case 5:
+                    TrailerResponse trailer_response = JsonUtility.FromJson<TrailerResponse>(message);
+                    TrailerResult trailer_result = trailer_response.result;
+                    truck.trailers = trailer_result.data.trailers;
                     break;
             }
 

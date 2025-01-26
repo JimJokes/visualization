@@ -1,7 +1,5 @@
-using Unity.VisualScripting;
 using UnityEngine;
 using DG.Tweening;
-using UnityEditor.UI;
 
 public class Vehicle : MonoBehaviour
 {
