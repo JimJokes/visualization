@@ -1,5 +1,6 @@
 using Baracuda.Monitoring;
 using DG.Tweening;
+using Unity.Mathematics;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -26,6 +27,12 @@ public class CameraHandler : MonitoredBehaviour
     string state = "normal";
     [Monitor]
     Vector3 additional_rotation_offset = new Vector3(0, 0, 0);
+    GameObject truck;
+
+    void Start()
+    {
+        truck = GameObject.Find("Truck");
+    }
 
     Vector3 GetAverageSteeringPoint(){
         Vector3[] steering = backend.truck.steering;
@@ -62,19 +69,29 @@ public class CameraHandler : MonitoredBehaviour
         Vector3 average_point = GetAverageSteeringPoint();
         
         // Add the offset to point towards the average steering point
-        Vector3 temp_additional_rotation_offset = new Vector3(0, Quaternion.LookRotation((average_point - transform.parent.position).normalized, Vector3.up).eulerAngles.y - transform.rotation.eulerAngles.y, 0);
+        Vector3 temp_additional_rotation_offset = new Vector3(0, Quaternion.LookRotation((average_point - transform.parent.position).normalized, Vector3.up).eulerAngles.y - truck.transform.rotation.eulerAngles.y, 0) / 2;
+
+        if(temp_additional_rotation_offset.y > 180)
+        {
+            temp_additional_rotation_offset.y -= 360;
+        }
+        else if(temp_additional_rotation_offset.y < -180)
+        {
+            temp_additional_rotation_offset.y += 360;
+        }
+
+        if (temp_additional_rotation_offset.y > 90)
+        {
+            temp_additional_rotation_offset.y -= 180;
+        }
+        else if (temp_additional_rotation_offset.y < -90)
+        {
+            temp_additional_rotation_offset.y += 180;
+        }
+
         if (!float.IsNaN(Vector3.Distance(average_point, transform.parent.position)))
         {
             additional_rotation_offset = Vector3.Lerp(additional_rotation_offset, temp_additional_rotation_offset, Time.deltaTime * 0.01f * Vector3.Distance(average_point, transform.parent.position));
-        }
-
-        if (additional_rotation_offset.y > 90)
-        {
-            additional_rotation_offset.y -= 180;
-        }
-        else if (additional_rotation_offset.y < -90)
-        {
-            additional_rotation_offset.y += 180;
         }
 
         bool is_stationary = backend.truck.state.speed < 0.5f && backend.truck.state.speed > -0.5f;

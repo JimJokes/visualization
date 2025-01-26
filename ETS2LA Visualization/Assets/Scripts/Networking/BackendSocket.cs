@@ -135,7 +135,7 @@ public class BackendSocket : MonitoredBehaviour
 
     private new void Awake()
     {
-        DOTween.SetTweensCapacity(2000, 100);
+        DOTween.SetTweensCapacity(5000, 100);
 
         WebSocketConfig config = new WebSocketConfig();
         config.MaxReceiveBytes = 1024 * 1024;

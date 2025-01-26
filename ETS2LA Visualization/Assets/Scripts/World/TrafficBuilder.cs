@@ -1,35 +1,72 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class TrafficBuilder : MonoBehaviour
 {
 
+    public BackendSocket backend;
     public GameObject vehiclePrefab;
     public GameObject trailerPrefab;
-    public int vehicleCount = 20;
-    public int trailerCount = 40;
-    public GameObject[] vehicles;
-    public GameObject[] trailers;
+    public int trailerCountPerVehicle = 2;
+    public List<GameObject> vehicles = new List<GameObject>();
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        trailers = new GameObject[trailerCount];
-        for (int i = 0; i < trailerCount; i++)
+        backend = GameObject.Find("Websocket Data").GetComponent<BackendSocket>();
+    }
+
+    void SpawnVehicle(int uid)
+    {
+        GameObject vehicle = Instantiate(vehiclePrefab, new Vector3(0, 0, 0), Quaternion.identity);
+        vehicle.name = "Vehicle " + uid;
+        vehicle.transform.parent = transform;
+        vehicle.GetComponent<Vehicle>().uid = uid;
+        vehicle.GetComponent<Vehicle>().trailers = new GameObject[2];
+        vehicle.GetComponent<Vehicle>().trailers[0] = Instantiate(trailerPrefab, new Vector3(0, 0, 0), Quaternion.identity);
+        vehicle.GetComponent<Vehicle>().trailers[0].name = "Trailer " + uid + " 0";
+        vehicle.GetComponent<Vehicle>().trailers[0].transform.parent = transform;
+        vehicle.GetComponent<Vehicle>().trailers[1] = Instantiate(trailerPrefab, new Vector3(0, 0, 0), Quaternion.identity);
+        vehicle.GetComponent<Vehicle>().trailers[1].name = "Trailer " + uid + " 1";
+        vehicle.GetComponent<Vehicle>().trailers[1].transform.parent = transform;
+        
+        vehicles.Add(vehicle);
+    }
+
+    public void RemoveVehicle(int uid)
+    {
+        GameObject vehicle = GameObject.Find("Vehicle " + uid);
+        Destroy(vehicle);
+        GameObject trailer0 = GameObject.Find("Trailer " + uid + " 0");
+        Destroy(trailer0);
+        GameObject trailer1 = GameObject.Find("Trailer " + uid + " 1");
+        Destroy(trailer1);
+        vehicles.Remove(vehicle);
+    }
+
+    void Update()
+    {
+        if (backend.world == null)
         {
-            trailers[i] = Instantiate(trailerPrefab, new Vector3(i * 10, 0, 0), Quaternion.identity);
-            trailers[i].name = "Trailer " + i + " truck " + i / 2;
-            trailers[i].transform.parent = transform;
+            return;
         }
-        vehicles = new GameObject[vehicleCount];
-        for (int i = 0; i < vehicleCount; i++)
+        if (backend.world.traffic == null)
         {
-            vehicles[i] = Instantiate(vehiclePrefab, new Vector3(i * 10, 0, 0), Quaternion.identity);
-            vehicles[i].name = "Vehicle " + i;
-            vehicles[i].transform.parent = transform;
-            vehicles[i].GetComponent<Vehicle>().id = i;
-            vehicles[i].GetComponent<Vehicle>().trailers = new GameObject[2];
-            vehicles[i].GetComponent<Vehicle>().trailers[0] = trailers[i * 2];
-            vehicles[i].GetComponent<Vehicle>().trailers[1] = trailers[i * 2 + 1];
+            return;
+        }
+
+        int[] uids = new int[vehicles.Count];
+        for (int i = 0; i < vehicles.Count; i++)
+        {
+            uids[i] = vehicles[i].GetComponent<Vehicle>().uid;
+        }
+
+        foreach (VehicleClass vehicle in backend.world.traffic)
+        {
+            if (!System.Array.Exists(uids, element => element == vehicle.id))
+            {
+                SpawnVehicle(vehicle.id);
+            }
         }
     }
 }
