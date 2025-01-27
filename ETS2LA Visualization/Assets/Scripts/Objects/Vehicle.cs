@@ -1,5 +1,6 @@
 using UnityEngine;
 using DG.Tweening;
+using System.Linq;
 
 public class Vehicle : MonoBehaviour
 {
@@ -18,6 +19,25 @@ public class Vehicle : MonoBehaviour
     {
         backend = GameObject.Find("Websocket Data").GetComponent<BackendSocket>();
         trafficBuilder = GameObject.Find("Traffic").GetComponent<TrafficBuilder>();
+    }
+
+    void EnableChild(int index)
+    {
+        for (int i = 0; i < 4; i++)
+        {
+            transform.GetChild(i).gameObject.SetActive(i == index);
+        }
+    }
+
+    void ColorChild(int index, Color color)
+    {
+        GameObject child = transform.GetChild(index).gameObject;
+        if (child.GetComponent<MeshRenderer>() == null)
+        {
+            child = child.transform.GetChild(0).gameObject;
+        }
+        Material material = child.GetComponent<MeshRenderer>().material;
+        material.color = color;
     }
 
     void Update()
@@ -46,6 +66,7 @@ public class Vehicle : MonoBehaviour
         VehicleClass self = backend.world.traffic[System.Array.FindIndex(uids, element => element == uid)];
 
         Vector3 target_position = new Vector3(self.position.z, self.position.y + self.size.height / 2, self.position.x);
+        Vector3 truck_position = new Vector3(backend.truck.transform.z, backend.truck.transform.y, backend.truck.transform.x);
         if(Vector3.Distance(transform.position, target_position) > 5f)
         {
             transform.position = target_position;
@@ -71,6 +92,8 @@ public class Vehicle : MonoBehaviour
             }
 
             trailers[i].SetActive(true);
+            trailers[i].GetComponent<Trailer>().uid = uid;
+            trailers[i].GetComponent<Trailer>().backend = backend;
 
             Vector3 target_trailer_position = new Vector3(self.trailers[i].position.z, self.trailers[i].position.y + self.trailers[i].size.height / 2, self.trailers[i].position.x);
             if (Vector3.Distance(trailers[i].transform.position, target_trailer_position) > 5f)
@@ -105,31 +128,41 @@ public class Vehicle : MonoBehaviour
             type = "car";
         }
 
+        float distance = Vector3.Distance(truck_position, target_position);
+
         switch (type)
         {
             case "car":
-                transform.GetChild(0).gameObject.SetActive(true);
-                transform.GetChild(1).gameObject.SetActive(false);
-                transform.GetChild(2).gameObject.SetActive(false);
-                transform.GetChild(3).gameObject.SetActive(false);
+                EnableChild(0);
+                if(backend.world.highlights != null && backend.world.highlights.vehicles.Contains(uid) && distance < 100)
+                    ColorChild(0, new Color(0.5f, 0.9f, 1.0f));
+                else
+                    ColorChild(0, Color.white);
+
                 break;
             case "van":
-                transform.GetChild(0).gameObject.SetActive(false);
-                transform.GetChild(1).gameObject.SetActive(true);
-                transform.GetChild(2).gameObject.SetActive(false);
-                transform.GetChild(3).gameObject.SetActive(false);
+                EnableChild(1);
+                if(backend.world.highlights != null && backend.world.highlights.vehicles.Contains(uid) && distance < 100)
+                    ColorChild(1, new Color(0.5f, 0.9f, 1.0f));
+                else
+                    ColorChild(1, Color.white);
+
                 break;
             case "bus":
-                transform.GetChild(0).gameObject.SetActive(false);
-                transform.GetChild(1).gameObject.SetActive(false);
-                transform.GetChild(2).gameObject.SetActive(true);
-                transform.GetChild(3).gameObject.SetActive(false);
+                EnableChild(2);
+                if(backend.world.highlights != null && backend.world.highlights.vehicles.Contains(uid) && distance < 100)
+                    ColorChild(2, new Color(0.5f, 0.9f, 1.0f));
+                else
+                    ColorChild(2, Color.white);
+
                 break;
             case "truck":
-                transform.GetChild(0).gameObject.SetActive(false);
-                transform.GetChild(1).gameObject.SetActive(false);
-                transform.GetChild(2).gameObject.SetActive(false);
-                transform.GetChild(3).gameObject.SetActive(true);
+                EnableChild(3);
+                if(backend.world.highlights != null && backend.world.highlights.vehicles.Contains(uid) && distance < 100)
+                    ColorChild(3, new Color(0.5f, 0.9f, 1.0f));
+                else
+                    ColorChild(3, Color.white);
+
                 break;
         }
     }

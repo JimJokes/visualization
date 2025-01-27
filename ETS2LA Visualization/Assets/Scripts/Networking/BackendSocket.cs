@@ -26,7 +26,7 @@ public class BackendSocket : MonitoredBehaviour
     #endregion
 
     #region Backend Setup
-    public int[] subscribed_channels = new int[] { 1, 2, 3, 4 };
+    public int[] subscribed_channels = new int[] { 1, 2, 3, 4, 5, 6 };
 
     class SubscribeChannel {
         public int channel;
@@ -45,7 +45,7 @@ public class BackendSocket : MonitoredBehaviour
     }
     #endregion
 
-    # region Channel 1
+    # region Channel 1 - Position
     [System.Serializable]
     public class Transform {
         public float x;
@@ -61,7 +61,7 @@ public class BackendSocket : MonitoredBehaviour
     public class TransformResponse : BaseResponse { public new TransformResult result; }
     #endregion
 
-    # region Channel 2
+    # region Channel 2 - Steering
     [System.Serializable]
     public class SteeringData
     {
@@ -75,7 +75,7 @@ public class BackendSocket : MonitoredBehaviour
     Vector3[] last_steering = new Vector3[0];
     #endregion
 
-    # region Channel 3
+    # region Channel 3 - Truck State
     [System.Serializable]
     public class TruckState
     {
@@ -93,7 +93,7 @@ public class BackendSocket : MonitoredBehaviour
     public class StateResponse : BaseResponse { public new StateResult result; }
     #endregion
 
-    # region Channel 4
+    # region Channel 4 - Traffic
     [System.Serializable]
     public class TrafficData
     {
@@ -105,7 +105,7 @@ public class BackendSocket : MonitoredBehaviour
     public class TrafficResponse : BaseResponse { public new TrafficResult result; }
     #endregion
 
-    # region Channel 5
+    # region Channel 5 - Trailers
     [System.Serializable]
     public class TrailerData
     {
@@ -115,6 +115,20 @@ public class BackendSocket : MonitoredBehaviour
     public class TrailerResult : BaseResult { public new TrailerData data; }
     [System.Serializable]
     public class TrailerResponse : BaseResponse { public new TrailerResult result; }
+    #endregion
+
+    # region Channel 6 - Higlights
+
+    [System.Serializable]
+    public class HighlightData
+    {
+        public int[] vehicles;
+    }
+    [System.Serializable]
+    public class HighlightResult : BaseResult { public new HighlightData data; }
+    [System.Serializable]
+    public class HighlightResponse : BaseResponse { public new HighlightResult result; }
+
     #endregion
 
     # region Truck
@@ -128,8 +142,15 @@ public class BackendSocket : MonitoredBehaviour
     #endregion 
 
     # region World
-    public class World{
+    public class Highlights 
+    {
+        public int[] vehicles = new int[0];
+    }
+
+    public class World
+    {
         public VehicleClass[] traffic = new VehicleClass[0];
+        public Highlights highlights = new Highlights();
     }
     public World world = new World();
     #endregion
@@ -265,6 +286,12 @@ public class BackendSocket : MonitoredBehaviour
                     TrailerResponse trailer_response = JsonUtility.FromJson<TrailerResponse>(message);
                     TrailerResult trailer_result = trailer_response.result;
                     truck.trailers = trailer_result.data.trailers;
+                    break;
+
+                case 6:
+                    HighlightResponse highlight_response = JsonUtility.FromJson<HighlightResponse>(message);
+                    HighlightResult highlight_result = highlight_response.result;
+                    world.highlights.vehicles = highlight_result.data.vehicles;
                     break;
             }
 
