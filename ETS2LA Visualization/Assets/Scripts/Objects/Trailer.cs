@@ -18,7 +18,7 @@ public class Trailer : MonoBehaviour
         {
             backend = GameObject.Find("Websocket Data").GetComponent<BackendSocket>();
         }
-        if(backend.world.highlights != null && backend.world.highlights.vehicles.Contains(uid))
+        if(backend.world != null && backend.world.highlights != null && backend.world.highlights.vehicles != null && backend.world.highlights.vehicles.Contains(uid))
         {
             Material material = transform.GetChild(0).GetChild(0).GetComponent<MeshRenderer>().material;
             material.color = new Color(0.5f, 0.9f, 1.0f);

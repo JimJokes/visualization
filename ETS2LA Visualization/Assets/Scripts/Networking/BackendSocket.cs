@@ -203,6 +203,14 @@ public class BackendSocket : MonitoredBehaviour
         }
     }
 
+    private void Acknowledge(WebSocketConnection connection, int channel)
+    {
+        SubscribeChannel subscribe = new SubscribeChannel();
+        subscribe.channel = channel;
+        subscribe.method = "acknowledge";
+        connection.AddOutgoingMessage(JsonUtility.ToJson(subscribe));
+    }
+
     private void OnStateChanged(WebSocketConnection connection, WebSocketState oldState, WebSocketState newState)
     {
         switch (newState)
@@ -297,6 +305,8 @@ public class BackendSocket : MonitoredBehaviour
 
             messages.Add(message);
         }
+        
+        Acknowledge(connection, 0);
 
         if (Time.time - last_profile > profiling_time)
         {

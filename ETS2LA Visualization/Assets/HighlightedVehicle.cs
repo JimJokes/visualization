@@ -28,6 +28,12 @@ public class HighlightedVehicle : MonoBehaviour
             return;
         }
 
+        if(target_uid == 0)
+        {
+            transform.GetChild(0).gameObject.SetActive(false);
+            return;
+        }
+
         for (int i = 0; i < backend.world.traffic.Length; i++)
         {
             if (backend.world.traffic[i].id == target_uid)
