@@ -1,12 +1,14 @@
 using UnityEngine;
 using TMPro;
 using DG.Tweening;
+using System;
 
 public class HighlightedVehicle : MonoBehaviour
 {
 
     public TMP_Text speed;
     public TMP_Text difference;
+    public TMP_Text distance_text;
     public BackendSocket backend;
     public int target_uid;
 
@@ -56,10 +58,12 @@ public class HighlightedVehicle : MonoBehaviour
                 float target_speed = backend.world.traffic[i].speed * 3.6f;
                 float target_speed_offset = (backend.world.traffic[i].speed - backend.truck.state.speed) * 3.6f;
 
-                target_speed = (float)System.Math.Round(target_speed, 0);
-                target_speed_offset = (float)System.Math.Round(target_speed_offset, 0);
+                target_speed = (float)Math.Round(target_speed, 0);
+                target_speed_offset = (float)Math.Round(target_speed_offset, 0);
 
                 speed.text = target_speed.ToString() + " km/h";
+                distance_text.text = Math.Round(distance, 0).ToString() + " m";
+
                 if (target_speed_offset > 0)
                 {
                     difference.text = "+ " + target_speed_offset.ToString();
@@ -68,7 +72,7 @@ public class HighlightedVehicle : MonoBehaviour
                 }
                 else if (target_speed_offset < 0)
                 {
-                    difference.text = "- " + System.Math.Abs(target_speed_offset).ToString();
+                    difference.text = "- " + Math.Abs(target_speed_offset).ToString();
                     difference.enabled = true;
                     difference.color = new Color(1, 0, 0);
                 }

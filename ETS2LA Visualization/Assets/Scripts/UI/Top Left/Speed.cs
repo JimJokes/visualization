@@ -1,4 +1,5 @@
 using UnityEngine;
+using Unity.Mathematics;
 using TMPro;
 
 public class Speed : MonoBehaviour
@@ -24,6 +25,6 @@ public class Speed : MonoBehaviour
             return;
         }
 
-        speed.text = ((int)(backend.truck.state.speed * 3.6f)).ToString();
+        speed.text = math.round(backend.truck.state.speed * 3.6f).ToString();
     }
 }

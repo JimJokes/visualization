@@ -1,5 +1,6 @@
 using UnityEngine;
 using TMPro;
+using Unity.Mathematics;
 
 public class TargetSpeed : MonoBehaviour
 {
@@ -26,6 +27,6 @@ public class TargetSpeed : MonoBehaviour
             return;
         }
 
-        targetspeed.text = ((int)(backend.truck.state.target_speed * 3.6f)).ToString();
+        targetspeed.text = math.round(backend.truck.state.target_speed * 3.6f).ToString();
     }
 }

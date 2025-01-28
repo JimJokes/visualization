@@ -1,4 +1,5 @@
 using UnityEngine;
+using Unity.Mathematics;
 using TMPro;
 
 public class SpeedLimit : MonoBehaviour
@@ -24,6 +25,6 @@ public class SpeedLimit : MonoBehaviour
             return;
         }
 
-        speedlimit.text = ((int)(backend.truck.state.speed_limit * 3.6f)).ToString();
+        speedlimit.text = math.round(backend.truck.state.speed_limit * 3.6f).ToString();
     }
 }
