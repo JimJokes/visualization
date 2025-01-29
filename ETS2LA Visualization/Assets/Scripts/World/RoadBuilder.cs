@@ -86,6 +86,8 @@ public class RoadBuilder : MonoBehaviour
                 }
                 
                 GameObject road_object = new GameObject("Road " + road.uid);
+                road_object.AddComponent<RoadHandler>();
+                road_object.GetComponent<RoadHandler>().road = road;
                 
                 Vector3 average = new Vector3(0, 0, 0);
                 for (int i = 0; i < road.points.Length; i++)
@@ -96,9 +98,19 @@ public class RoadBuilder : MonoBehaviour
 
                 for(int i = 0; i < road.lanes.Length; i++)
                 {
+                    bool is_left = i < road.road_look.lanes_left.Length;
                     // Lane Base
                     Lane lane = road.lanes[i];
-                    Mesh mesh = lane.CreateMeshAlongPoints(left_shoulder: road.road_look.shoulder_space_left, right_shoulder: road.road_look.shoulder_space_right);
+                    Mesh mesh = new Mesh();
+                    if (is_left)
+                    {
+                        mesh = lane.CreateMeshAlongPoints(left_shoulder: road.road_look.shoulder_space_left, right_shoulder: 0);
+                    }
+                    else
+                    {
+                        mesh = lane.CreateMeshAlongPoints(right_shoulder: road.road_look.shoulder_space_right, left_shoulder: 0);
+                    }
+                    //mesh = lane.CreateMeshAlongPoints(left_shoulder: 0, right_shoulder: 0);
                     GameObject lane_object = new GameObject("Lane " + i.ToString());
                     lane_object.AddComponent<MeshFilter>().mesh = mesh;
                     MeshRenderer mesh_renderer = lane_object.AddComponent<MeshRenderer>();

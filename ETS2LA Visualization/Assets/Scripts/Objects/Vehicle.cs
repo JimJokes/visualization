@@ -79,7 +79,7 @@ public class Vehicle : MonoBehaviour
             transform.DOMove(target_position, 0.25f).SetLink(gameObject);
         }
         
-        transform.localEulerAngles = new Vector3(self.rotation.pitch, -self.rotation.yaw + 90, -self.rotation.roll);
+        transform.DORotate(new Vector3(self.rotation.pitch, -self.rotation.yaw + 90, -self.rotation.roll), 0.25f).SetLink(gameObject);
         transform.localScale = new Vector3(self.size.width, self.size.height, self.size.length);
 
         int trailer_count = self.trailer_count;
@@ -107,7 +107,7 @@ public class Vehicle : MonoBehaviour
             {
                 trailers[i].transform.DOMove(target_trailer_position, 0.25f).SetLink(gameObject);
             }
-            trailers[i].transform.eulerAngles = new Vector3(self.trailers[i].rotation.pitch, -self.trailers[i].rotation.yaw + 90, -self.trailers[i].rotation.roll);
+            trailers[i].transform.DORotate(new Vector3(self.trailers[i].rotation.pitch, -self.trailers[i].rotation.yaw + 90, -self.trailers[i].rotation.roll), 0.25f).SetLink(gameObject);
             trailers[i].transform.localScale = new Vector3(self.trailers[i].size.width, self.trailers[i].size.height, self.trailers[i].size.length);
         }
 

@@ -6,6 +6,20 @@ using DG.Tweening;
 using UnityEngine.UIElements;
 using Unity.VisualScripting;
 
+[System.Serializable]
+public class RouteInformation
+{
+    public string[] uids;
+    public int lane_index;
+    public string type;
+    public bool is_ended;
+    public bool is_lane_changing;
+
+    // Only populated if is_lane_changing is true
+    public Vector3[] lane_points = new Vector3[0];
+    public Vector3[] last_lane_points = new Vector3[0];
+}
+
 public class BackendSocket : MonitoredBehaviour
 {
     #region Websocket
@@ -66,6 +80,7 @@ public class BackendSocket : MonitoredBehaviour
     public class SteeringData
     {
         public Point[] points;
+        public RouteInformation[] information;
     }
     [System.Serializable]
     public class SteeringResult : BaseResult { public new SteeringData data; }
@@ -151,6 +166,7 @@ public class BackendSocket : MonitoredBehaviour
     {
         public VehicleClass[] traffic = new VehicleClass[0];
         public Highlights highlights = new Highlights();
+        public RouteInformation[] route_information = new RouteInformation[0];
     }
     public World world = new World();
     #endregion
@@ -274,8 +290,9 @@ public class BackendSocket : MonitoredBehaviour
                             points[i] = steering_result.data.points[i].ToVector3() + Vector3.up * 0.1f;
                         }
                         last_steering = points;
-                    } catch {}
 
+                        world.route_information = steering_result.data.information;
+                    } catch {}
                     break;
 
                 case 3:

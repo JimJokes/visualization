@@ -197,6 +197,8 @@ public class PrefabBuilder : MonoBehaviour
                 }
                 
                 GameObject prefab_object = new GameObject("Prefab " + prefab.uid);
+                prefab_object.AddComponent<PrefabHandler>();
+                
                 prefab_object.transform.parent = this.transform;
                 prefab_object.transform.position = prefab.origin_node.PositionTuple();
 
