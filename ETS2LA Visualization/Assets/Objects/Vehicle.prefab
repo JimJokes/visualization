@@ -193,6 +193,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -7511558181221131132, guid: 080bbae9ed4f6f34cb3030ef923d5c17, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 2ff77e1dd36b4db49b602eb167069536, type: 2}
     - target: {fileID: 919132149155446097, guid: 080bbae9ed4f6f34cb3030ef923d5c17, type: 3}
       propertyPath: m_Name
       value: traffic_bus_export
@@ -271,6 +275,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -7635826562936255635, guid: 84251c2f0aeb6904495ca7f8d0425837, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 2ff77e1dd36b4db49b602eb167069536, type: 2}
     - target: {fileID: 919132149155446097, guid: 84251c2f0aeb6904495ca7f8d0425837, type: 3}
       propertyPath: m_Name
       value: traffic_van
@@ -349,6 +357,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -7635826562936255635, guid: e6bc61d7fddc45d4ea4adf9e11f7c8de, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 2ff77e1dd36b4db49b602eb167069536, type: 2}
     - target: {fileID: 919132149155446097, guid: e6bc61d7fddc45d4ea4adf9e11f7c8de, type: 3}
       propertyPath: m_Name
       value: user_truck
@@ -427,6 +439,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -7635826562936255635, guid: a75cf8ca9ea6c5b458b51d4e7e9f121e, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 2ff77e1dd36b4db49b602eb167069536, type: 2}
     - target: {fileID: 919132149155446097, guid: a75cf8ca9ea6c5b458b51d4e7e9f121e, type: 3}
       propertyPath: m_Name
       value: traffic_car

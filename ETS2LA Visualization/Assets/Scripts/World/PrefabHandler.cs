@@ -17,6 +17,7 @@ public class PrefabHandler : MonoBehaviour
         {
             lanes[i] = transform.GetChild(i).gameObject;
             lane_positions[i] = lanes[i].transform.position;
+            lanes[i].GetComponent<Renderer>().material.color = new Color(0.04f, 0.04f, 0.042f);
         }
 
         backend = GameObject.Find("Websocket Data").GetComponent<BackendSocket>();
@@ -46,8 +47,8 @@ public class PrefabHandler : MonoBehaviour
                     {
                         lanes[0].transform.position = lane_positions[0] + Vector3.left * 0.5f;
                         lanes[1].transform.position = lane_positions[1] + Vector3.right * 0.5f;
-                        lanes[0].GetComponent<Renderer>().material.color = new Color(0, 0, 0);
-                        lanes[1].GetComponent<Renderer>().material.color = new Color(0, 0, 0);
+                        lanes[0].GetComponent<Renderer>().material.color = new Color(0.04f, 0.04f, 0.042f);
+                        lanes[1].GetComponent<Renderer>().material.color = new Color(0.04f, 0.04f, 0.042f);
                     }
                 }
 
@@ -56,12 +57,12 @@ public class PrefabHandler : MonoBehaviour
                 {
                     if (i == highlighted_lane)
                     {
-                        lanes[i].GetComponent<Renderer>().material.color = new Color(0, 0.03f, 0.08f);
+                        lanes[i].GetComponent<Renderer>().material.color = new Color(0.04f, 0.05f, 0.076f);
                         lanes[i].transform.position = lane_positions[i] + Vector3.up * 0.02f;
                     }
                     else
                     {
-                        lanes[i].GetComponent<Renderer>().material.color = new Color(0, 0, 0);
+                        lanes[i].GetComponent<Renderer>().material.color = new Color(0.04f, 0.04f, 0.042f);
                         lanes[i].transform.position = lane_positions[i];
                     }
                 }

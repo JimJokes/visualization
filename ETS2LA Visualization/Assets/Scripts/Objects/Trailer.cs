@@ -26,7 +26,7 @@ public class Trailer : MonoBehaviour
         else
         {
             Material material = transform.GetChild(0).GetChild(0).GetComponent<MeshRenderer>().material;
-            material.color = Color.white;
+            material.color = new Color(0.5f, 0.5f, 0.5f);
         }
     }
 }

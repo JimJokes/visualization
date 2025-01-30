@@ -137,7 +137,7 @@ public class Vehicle : MonoBehaviour
                 if(backend.world.highlights != null && backend.world.highlights.vehicles.Contains(uid) && distance < 100)
                     ColorChild(0, new Color(0.5f, 0.9f, 1.0f));
                 else
-                    ColorChild(0, Color.white);
+                    ColorChild(0, new Color(0.5f, 0.5f, 0.5f));
 
                 break;
             case "van":
@@ -145,7 +145,7 @@ public class Vehicle : MonoBehaviour
                 if(backend.world.highlights != null && backend.world.highlights.vehicles.Contains(uid) && distance < 100)
                     ColorChild(1, new Color(0.5f, 0.9f, 1.0f));
                 else
-                    ColorChild(1, Color.white);
+                    ColorChild(1, new Color(0.5f, 0.5f, 0.5f));
 
                 break;
             case "bus":
@@ -153,7 +153,7 @@ public class Vehicle : MonoBehaviour
                 if(backend.world.highlights != null && backend.world.highlights.vehicles.Contains(uid) && distance < 100)
                     ColorChild(2, new Color(0.5f, 0.9f, 1.0f));
                 else
-                    ColorChild(2, Color.white);
+                    ColorChild(2, new Color(0.5f, 0.5f, 0.5f));
 
                 break;
             case "truck":
@@ -161,7 +161,7 @@ public class Vehicle : MonoBehaviour
                 if(backend.world.highlights != null && backend.world.highlights.vehicles.Contains(uid) && distance < 100)
                     ColorChild(3, new Color(0.5f, 0.9f, 1.0f));
                 else
-                    ColorChild(3, Color.white);
+                    ColorChild(3, new Color(0.5f, 0.5f, 0.5f));
 
                 break;
         }

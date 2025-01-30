@@ -15,6 +15,7 @@ public class RoadHandler : MonoBehaviour
         for (int i = 0; i < transform.childCount; i++)
         {
             lanes[i] = transform.GetChild(i).gameObject;
+            lanes[i].GetComponent<Renderer>().material.color = new Color(0.2f, 0.2f, 0.2f);
         }
 
         backend = GameObject.Find("Websocket Data").GetComponent<BackendSocket>();
@@ -38,22 +39,22 @@ public class RoadHandler : MonoBehaviour
                 { // Highlight all indeces until left_lanes (all the lanes on the left)
                     for (int i = 0; i < left_lanes; i++)
                     {
-                        lanes[i].GetComponent<Renderer>().material.color = new Color(0, 0.15f, 0.3f);
+                        lanes[i].GetComponent<Renderer>().material.color = new Color(0.2f, 0.23f, 0.3f);
                     }
                     for (int i = left_lanes; i < lanes.Length; i++)
                     {
-                        lanes[i].GetComponent<Renderer>().material.color = new Color(0, 0, 0);
+                        lanes[i].GetComponent<Renderer>().material.color = new Color(0.2f, 0.2f, 0.2f);
                     }
                 }
                 else
                 { // Highlight all indeces after left_lanes (all the lanes on the right)
                     for (int i = left_lanes; i < lanes.Length; i++)
                     {
-                        lanes[i].GetComponent<Renderer>().material.color = new Color(0, 0.15f, 0.3f);
+                        lanes[i].GetComponent<Renderer>().material.color = new Color(0.2f, 0.23f, 0.3f);
                     }
                     for (int i = 0; i < left_lanes; i++)
                     {
-                        lanes[i].GetComponent<Renderer>().material.color = new Color(0, 0, 0);
+                        lanes[i].GetComponent<Renderer>().material.color = new Color(0.2f, 0.2f, 0.2f);
                     }
                 }
             }
