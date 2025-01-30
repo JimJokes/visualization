@@ -5,7 +5,7 @@
 //---------- -------------------------- -------
 
 //Runtime Monitoring
-//File generated: 2025-01-16 18:15:54Z
+//File generated: 2025-01-30 13:49:31Z
 //Please dont change the contents of this file. Otherwise IL2CPP runtime may not work with runtime monitoring!
 //Ensure that this file is located in Assembly-CSharp. Otherwise this file may not compile.
 //If this file contains any errors please contact me and/or create an issue in the linked repository.
@@ -13,7 +13,7 @@
 
 #if ENABLE_IL2CPP && !DISABLE_MONITORING
 
-internal class IL2CPP_AOT_8FU7FLZIUXAL1DT3FTC8
+internal class IL2CPP_AOT_X41YYD2H569R4T37WKST
 {
     //Value Processor Method Definitions
 
@@ -56,6 +56,7 @@ internal class IL2CPP_AOT_8FU7FLZIUXAL1DT3FTC8
         // Baracuda.Monitoring.Modules.FPSMonitor::_fps (System.Single)
         Baracuda.Monitoring.IL2CPP.IL2CPPTypeDefinitions.TypeDefField<System.Object, System.Single>();
 
+        // CameraHandler::additional_rotation_offset (UnityEngine.Vector3)
         // PlayerTruck::position (UnityEngine.Vector3)
         // PlayerTruck::rotation (UnityEngine.Vector3)
         Baracuda.Monitoring.IL2CPP.IL2CPPTypeDefinitions.TypeDefField<System.Object, UnityEngine.Vector3>();
@@ -85,13 +86,13 @@ internal class IL2CPP_AOT_8FU7FLZIUXAL1DT3FTC8
 
 //General
 
-//Monitored Member:               33
-//Monitored Member Instance:      33
+//Monitored Member:               34
+//Monitored Member Instance:      34
 
 //MemberInfo
 
-//Monitored Fields:               29
-//Monitored Fields Instance:      29
+//Monitored Fields:               30
+//Monitored Fields Instance:      30
 //Monitored Properties:            4
 //Monitored Properties Instance:   4
 
@@ -101,7 +102,7 @@ internal class IL2CPP_AOT_8FU7FLZIUXAL1DT3FTC8
 //Monitored int:                   5
 //Monitored Queue<string>:         1
 //Monitored string:               23
-//Monitored Vector3:               2
+//Monitored Vector3:               3
 
 //----------------------------------------------------------------------------------------------------------------------
 
