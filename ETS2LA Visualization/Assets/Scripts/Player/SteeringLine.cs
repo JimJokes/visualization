@@ -18,16 +18,15 @@ public class SteeringLine : MonoBehaviour
             return;
         }
         LineRenderer lineRenderer = GetComponent<LineRenderer>();
-        lineRenderer.SetPosition(0, truck.transform.position + Vector3.up * 0.1f);
         
         if(backend.truck.steering != last_data)
         {
             last_data = backend.truck.steering;
-            lineRenderer.positionCount = last_data.Length + 1;
+            lineRenderer.positionCount = last_data.Length;
 
             for (int i = 0; i < last_data.Length; i++)
             {
-                lineRenderer.SetPosition(i+1, last_data[i]);
+                lineRenderer.SetPosition(i, last_data[i] + Vector3.up * 0.2f);
             }
         }
     }

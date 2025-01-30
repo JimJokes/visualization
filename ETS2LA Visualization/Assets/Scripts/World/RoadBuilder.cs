@@ -165,6 +165,8 @@ public class RoadBuilder : MonoBehaviour
                 }
 
                 road_object.transform.parent = this.transform;
+                road_object.AddComponent<StaticObject>();
+                road_object.GetComponent<StaticObject>().position = road_object.transform.position;
                 instantiated_roads.Add(road.uid);
             }
 

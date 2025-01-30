@@ -65,6 +65,8 @@ public class BackendSocket : MonitoredBehaviour
         public float x;
         public float y;
         public float z;
+        public float sector_x;
+        public float sector_y;
         public float rx;
         public float ry;
         public float rz;
@@ -170,7 +172,6 @@ public class BackendSocket : MonitoredBehaviour
     }
     public World world = new World();
     #endregion
-
 
     public void Connect()
     {
@@ -287,7 +288,7 @@ public class BackendSocket : MonitoredBehaviour
                         Vector3[] points = new Vector3[steering_result.data.points.Length];
                         for (int i = 0; i < steering_result.data.points.Length; i++)
                         {
-                            points[i] = steering_result.data.points[i].ToVector3() + Vector3.up * 0.1f;
+                            points[i] = steering_result.data.points[i].ToVector3() - new Vector3(truck.transform.sector_y, 0, truck.transform.sector_x);
                         }
                         last_steering = points;
 

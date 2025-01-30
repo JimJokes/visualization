@@ -36,10 +36,10 @@ public class TrafficBuilder : MonoBehaviour
     public void RemoveVehicle(int uid)
     {
         GameObject vehicle = GameObject.Find("Vehicle " + uid);
+        GameObject trailer0 = vehicle.GetComponent<Vehicle>().trailers[0];
+        GameObject trailer1 = vehicle.GetComponent<Vehicle>().trailers[1];
         Destroy(vehicle);
-        GameObject trailer0 = GameObject.Find("Trailer " + uid + " 0");
         Destroy(trailer0);
-        GameObject trailer1 = GameObject.Find("Trailer " + uid + " 1");
         Destroy(trailer1);
         vehicles.Remove(vehicle);
     }

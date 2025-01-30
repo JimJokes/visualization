@@ -65,14 +65,12 @@ public class Vehicle : MonoBehaviour
 
         VehicleClass self = backend.world.traffic[System.Array.FindIndex(uids, element => element == uid)];
 
-        Vector3 target_position = new Vector3(self.position.z, self.position.y + self.size.height / 2, self.position.x);
-        Vector3 truck_position = new Vector3(backend.truck.transform.z, backend.truck.transform.y, backend.truck.transform.x);
+        Vector3 target_position = new Vector3(self.position.z - backend.truck.transform.sector_y, self.position.y + self.size.height / 2, self.position.x - backend.truck.transform.sector_x);
+        Vector3 truck_position = new Vector3(backend.truck.transform.z - backend.truck.transform.sector_y, backend.truck.transform.y, backend.truck.transform.x - backend.truck.transform.sector_x);
         if(Vector3.Distance(transform.position, target_position) > 5f)
         {
             transform.position = target_position;
-            Material material = GetComponent<Renderer>().material;
-            material.SetFloat("Opacity", 0);
-            material.DOFloat(1, "Opacity", 1);
+            transform.DOKill();
         }
         else
         {
@@ -95,13 +93,11 @@ public class Vehicle : MonoBehaviour
             trailers[i].GetComponent<Trailer>().uid = uid;
             trailers[i].GetComponent<Trailer>().backend = backend;
 
-            Vector3 target_trailer_position = new Vector3(self.trailers[i].position.z, self.trailers[i].position.y + self.trailers[i].size.height / 2, self.trailers[i].position.x);
+            Vector3 target_trailer_position = new Vector3(self.trailers[i].position.z - backend.truck.transform.sector_y, self.trailers[i].position.y + self.trailers[i].size.height / 2, self.trailers[i].position.x - backend.truck.transform.sector_x);
             if (Vector3.Distance(trailers[i].transform.position, target_trailer_position) > 5f)
             {
                 trailers[i].transform.position = target_trailer_position;
-                Material material = trailers[i].GetComponent<Renderer>().material;
-                material.SetFloat("Opacity", 0);
-                material.DOFloat(1, "Opacity", 1);
+                trailers[i].transform.DOKill();
             }
             else
             {

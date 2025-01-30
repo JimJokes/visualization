@@ -12,15 +12,58 @@ public class PlayerTruck : MonitoredBehaviour
     public BackendSocket backend;
     public GameObject trailer_prefab;
     public GameObject[] connected_trailers;
+    public float last_sector_x = 0;
+    public float last_sector_y = 0;
+
+    Vector3 GlobalToSector(Vector3 global, float sector_x, float sector_y)
+    {
+        return new Vector3(
+            global.x - sector_y, 
+            global.y, 
+            global.z - sector_x
+        );
+    }
+
+    Vector3 SectorToGlobal(Vector3 sector, float sector_x, float sector_y)
+    {
+        return new Vector3(
+            sector.x + sector_y, 
+            sector.y, 
+            sector.z + sector_x
+        );
+    }
+
     void Update()
     {
+        if(backend.truck == null)
+        {
+            return;
+        }
         if(backend.truck.transform != null)
         {
-            transform.DOMove(new Vector3(
-                backend.truck.transform.z, 
-                backend.truck.transform.y, 
-                backend.truck.transform.x
-            ), 0.2f);
+            Vector3 new_position = GlobalToSector(
+                new Vector3(
+                    backend.truck.transform.z, 
+                    backend.truck.transform.y, 
+                    backend.truck.transform.x
+                ),
+                backend.truck.transform.sector_x, backend.truck.transform.sector_y
+            );
+
+            if(backend.truck.transform.sector_y != last_sector_y || backend.truck.transform.sector_x != last_sector_x)
+            {
+                print("Sector Change");
+                Vector3 old_global = SectorToGlobal(transform.position, last_sector_x, last_sector_y);
+                Vector3 old_global_current_sector = GlobalToSector(old_global, backend.truck.transform.sector_x, backend.truck.transform.sector_y);
+                transform.position = old_global_current_sector;
+                transform.DOKill();
+                transform.DOMove(new_position, 0.2f);
+            }
+            else
+            {
+                transform.DOMove(new_position, 0.2f);
+            }
+
 
             transform.DORotateQuaternion(Quaternion.Euler(
                 -backend.truck.transform.ry, 
@@ -68,11 +111,23 @@ public class PlayerTruck : MonitoredBehaviour
                 Vector3 trailer_offset = trailer.transform.forward * distance;
 
                 Vector3 api_position = new Vector3(
-                    backend.truck.trailers[i].z, 
+                    backend.truck.trailers[i].z - backend.truck.transform.sector_y, 
                     backend.truck.trailers[i].y + 1, 
-                    backend.truck.trailers[i].x
+                    backend.truck.trailers[i].x - backend.truck.transform.sector_x
                 );
-                trailer.transform.DOMove(api_position + trailer_offset, 0.2f);
+
+                if (backend.truck.transform.sector_y != last_sector_y || backend.truck.transform.sector_x != last_sector_x)
+                {
+                    Vector3 old_global = SectorToGlobal(trailer.transform.position, last_sector_x, last_sector_y);
+                    Vector3 old_global_current_sector = GlobalToSector(old_global, backend.truck.transform.sector_x, backend.truck.transform.sector_y);
+                    trailer.transform.position = old_global_current_sector;
+                    trailer.transform.DOKill();
+                    trailer.transform.DOMove(api_position + trailer_offset, 0.2f);
+                }
+                else
+                {
+                    trailer.transform.DOMove(api_position + trailer_offset, 0.2f);
+                }
 
                 Vector3 api_rotation = new Vector3(
                     backend.truck.trailers[i].ry, 
@@ -81,6 +136,12 @@ public class PlayerTruck : MonitoredBehaviour
                 );
                 trailer.transform.DORotate(api_rotation, 0.2f);
             }
+        }
+
+        if (backend.truck.transform != null)
+        {
+            last_sector_x = backend.truck.transform.sector_x;
+            last_sector_y = backend.truck.transform.sector_y;
         }
     }
 }

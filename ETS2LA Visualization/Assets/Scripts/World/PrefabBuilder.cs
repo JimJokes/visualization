@@ -282,6 +282,8 @@ public class PrefabBuilder : MonoBehaviour
                 }
 
                 instantiated_prefabs.Add(prefab.uid);
+                prefab_object.AddComponent<StaticObject>();
+                prefab_object.GetComponent<StaticObject>().position = prefab_object.transform.position;
 
                 // It might work, but since the rotations are now applied to the points themselves this is no longer necessary
 

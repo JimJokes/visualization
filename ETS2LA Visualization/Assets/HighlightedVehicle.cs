@@ -41,8 +41,8 @@ public class HighlightedVehicle : MonoBehaviour
             if (backend.world.traffic[i].id == target_uid)
             {
 
-                Vector3 target_position = new Vector3(backend.world.traffic[i].position.z, backend.world.traffic[i].position.y + backend.world.traffic[i].size.height / 2, backend.world.traffic[i].position.x);
-                Vector3 truck_position = new Vector3(backend.truck.transform.z, backend.truck.transform.y, backend.truck.transform.x);
+                Vector3 target_position = new Vector3(backend.world.traffic[i].position.z - backend.truck.transform.sector_y, backend.world.traffic[i].position.y + backend.world.traffic[i].size.height / 2, backend.world.traffic[i].position.x - backend.truck.transform.sector_x);
+                Vector3 truck_position = new Vector3(backend.truck.transform.z - backend.truck.transform.sector_y, backend.truck.transform.y, backend.truck.transform.x - backend.truck.transform.sector_x);
                 float distance = Vector3.Distance(truck_position, target_position);
 
                 if(distance > 100)
