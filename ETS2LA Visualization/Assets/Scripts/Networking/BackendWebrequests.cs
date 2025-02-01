@@ -13,6 +13,7 @@ public class BackendWebrequests : MonitoredBehaviour
     {
         public Prefab[] prefabs;
         public Road[] roads;
+        public Model[] models;
     }
 
     [System.Serializable]
@@ -25,6 +26,7 @@ public class BackendWebrequests : MonitoredBehaviour
     [HideInInspector] public MapData map;
     [Monitor] public int roads_count = 0;
     [Monitor] public int prefabs_count = 0;
+    [Monitor] public int models_count = 0;
     [Monitor] private float next_check = 0;
     private string last_update_time = "";
     private string current_update_time = "";
@@ -61,6 +63,7 @@ public class BackendWebrequests : MonitoredBehaviour
                     map = JsonUtility.FromJson<MapData>(json);
                     roads_count = map.roads.Length;
                     prefabs_count = map.prefabs.Length;
+                    models_count = map.models.Length;
                     Debug.Log("Map data updated!");
 
                     List<string> lane_types = new List<string>();
