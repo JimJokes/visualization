@@ -1,6 +1,7 @@
-using UnityEngine;
-using TMPro;
 using Unity.Mathematics;
+using UnityEngine;
+using System.Linq;
+using TMPro;
 
 public class TargetSpeed : MonoBehaviour
 {
@@ -28,5 +29,11 @@ public class TargetSpeed : MonoBehaviour
         }
 
         targetspeed.text = math.round(backend.truck.state.target_speed * 3.6f).ToString();
+
+        if (backend.world.status.enabled != null)
+        {
+            targetspeed.color = backend.world.status.enabled.Contains("Map") ? new Color(0, 170/255f, 200/255f, 1f) : new Color(1, 1, 1, 1);
+            set.color = backend.world.status.enabled.Contains("Map") ? new Color(0, 170/255f, 200/255f, 1f) : new Color(0,0,0,0);
+        }
     }
 }

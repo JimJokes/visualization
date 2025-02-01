@@ -20,6 +20,13 @@ public class RouteInformation
     public Vector3[] last_lane_points = new Vector3[0];
 }
 
+[System.Serializable]
+public class StatusData
+{
+    public string[] enabled;
+    public string[] disabled;
+}
+
 public class BackendSocket : MonitoredBehaviour
 {
     #region Websocket
@@ -40,7 +47,7 @@ public class BackendSocket : MonitoredBehaviour
     #endregion
 
     #region Backend Setup
-    public int[] subscribed_channels = new int[] { 1, 2, 3, 4, 5, 6 };
+    public int[] subscribed_channels = new int[] { 1, 2, 3, 4, 5, 6, 7 };
 
     class SubscribeChannel {
         public int channel;
@@ -148,6 +155,13 @@ public class BackendSocket : MonitoredBehaviour
 
     #endregion
 
+    # region Channel 7 - Status
+    [System.Serializable]
+    public class StatusResult : BaseResult { public new StatusData data; }
+    [System.Serializable]
+    public class StatusResponse : BaseResponse { public new StatusResult result; }
+    #endregion
+
     # region Truck
     public class Truck{
         public Transform transform;
@@ -169,6 +183,7 @@ public class BackendSocket : MonitoredBehaviour
         public VehicleClass[] traffic = new VehicleClass[0];
         public Highlights highlights = new Highlights();
         public RouteInformation[] route_information = new RouteInformation[0];
+        public StatusData status = new StatusData();
     }
     public World world = new World();
     #endregion
@@ -318,6 +333,12 @@ public class BackendSocket : MonitoredBehaviour
                     HighlightResponse highlight_response = JsonUtility.FromJson<HighlightResponse>(message);
                     HighlightResult highlight_result = highlight_response.result;
                     world.highlights.vehicles = highlight_result.data.vehicles;
+                    break;
+
+                case 7:
+                    StatusResponse status_response = JsonUtility.FromJson<StatusResponse>(message);
+                    StatusResult status_result = status_response.result;
+                    world.status = status_result.data;
                     break;
             }
 

@@ -345,7 +345,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: set
+  m_text: auto
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 89fbe18a8a7aba04b9e9c0533d641e3e, type: 2}
   m_sharedMaterial: {fileID: 265791378333969976, guid: 89fbe18a8a7aba04b9e9c0533d641e3e, type: 2}
@@ -372,8 +372,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 16
-  m_fontSizeBase: 16
+  m_fontSize: 12
+  m_fontSizeBase: 12
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -1761,7 +1761,7 @@ MonoBehaviour:
   url: ws://localhost:37522
   connection_retry_time: 5
   profiling_time: 1
-  subscribed_channels: 010000000200000003000000040000000500000006000000
+  subscribed_channels: 01000000020000000300000004000000050000000600000007000000
 --- !u!4 &1028169604
 Transform:
   m_ObjectHideFlags: 0
@@ -2096,6 +2096,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   backend: {fileID: 1028169603}
   truck: {fileID: 1716119836}
+  enabled_color: {r: 0, g: 0.57254905, b: 0.77254903, a: 1}
+  disabled_color: {r: 0.3301887, g: 0.3301887, b: 0.3301887, a: 1}
   last_data: []
 --- !u!4 &1296189659
 Transform:
@@ -2292,6 +2294,8 @@ MonoBehaviour:
   backend: {fileID: 1028169603}
   trailer_prefab: {fileID: 6748089973021787999, guid: a16966639ebb21b488277a739cd313e0, type: 3}
   connected_trailers: []
+  last_sector_x: 0
+  last_sector_y: 0
 --- !u!4 &1716119838
 Transform:
   m_ObjectHideFlags: 0
