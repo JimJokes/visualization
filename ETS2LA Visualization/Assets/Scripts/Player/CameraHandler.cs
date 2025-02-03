@@ -69,7 +69,11 @@ public class CameraHandler : MonitoredBehaviour
         Vector3 average_point = GetAverageSteeringPoint();
         
         // Add the offset to point towards the average steering point
-        Vector3 temp_additional_rotation_offset = new Vector3(0, Quaternion.LookRotation((average_point - transform.parent.position).normalized, Vector3.up).eulerAngles.y - truck.transform.rotation.eulerAngles.y, 0) / 2;
+        Vector3 temp_additional_rotation_offset = new Vector3(0, 0, 0);
+        if ((average_point - transform.parent.position).normalized != Vector3.zero)
+        {
+            temp_additional_rotation_offset = new Vector3(0, Quaternion.LookRotation((average_point - transform.parent.position).normalized, Vector3.up).eulerAngles.y - truck.transform.rotation.eulerAngles.y, 0) / 2;
+        }
 
         if(temp_additional_rotation_offset.y > 180)
         {

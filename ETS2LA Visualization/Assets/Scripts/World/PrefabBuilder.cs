@@ -184,6 +184,18 @@ public class PrefabBuilder : MonoBehaviour
 
     void Update()
     {
+        if (backend == null)
+        {
+            return;
+        }
+        if (backend.map == null)
+        {
+            return;
+        }
+        if (backend.map.prefabs == null)
+        {
+            return;
+        }
         if (backend.prefabs_count > 0)
         {
             List<string> prefabs_to_not_remove = new List<string>();

@@ -13,11 +13,25 @@ public class ModelBuilder : MonoBehaviour
     void Start()
     {
         backend = GameObject.Find("Map Data").GetComponent<BackendWebrequests>();
-        cube = GameObject.CreatePrimitive(PrimitiveType.Cube).GetComponent<MeshFilter>().sharedMesh;
+        GameObject cube_object = GameObject.CreatePrimitive(PrimitiveType.Cube);
+        cube = cube_object.GetComponent<MeshFilter>().sharedMesh;
+        cube_object.SetActive(false);
     }
 
     void Update()
     {
+        if (backend == null)
+        {
+            return;
+        }
+        if (backend.map == null)
+        {
+            return;
+        }
+        if (backend.map.models == null)
+        {
+            return;
+        }
         if (backend.models_count > 0)
         {
             List<string> models_to_not_remove = new List<string>();
