@@ -85,8 +85,7 @@ public class Lane
         float offset = 0f;
         if (type == RoadMarkingType.DOUBLE)
         {
-            offset = -0.10f; // Leave a small gap for double markings
-            marking_width /= 3; // Center the marking so the two roads together are the same width.
+            offset = -marking_width / 2 - 0.075f; // Leave a small gap for double markings
         }
         else if (type == RoadMarkingType.DASHED || type == RoadMarkingType.DASHED_SHORT)
         {

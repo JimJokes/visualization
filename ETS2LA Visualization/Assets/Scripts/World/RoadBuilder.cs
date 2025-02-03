@@ -13,7 +13,7 @@ public class RoadBuilder : MonoBehaviour
 
     RoadMarkingType[] GetMarkingsForLane(Road road, int lane_index)
     {
-        bool no_lanes = road.road_look.name.Contains("no lanes");
+        bool no_lanes = road.road_look.name.Contains("no lanes") || road.road_look.name.Contains("dirt");
         bool no_outer_lanes = road.road_look.name.Contains("no outer lanes");
         bool no_center_lane = road.road_look.name.Contains("no center lane");
         bool double_markings = road.road_look.name.Contains("double");
@@ -63,7 +63,12 @@ public class RoadBuilder : MonoBehaviour
             try { left_lane_type = lane_types[lane_index + 1]; left_lane = road.lanes[lane_index + 1]; } catch { }
         }
 
-        if (left_lane_type != null && !left_lane_type.Contains("no_overtake") && left_lane.side == lane.side)
+        if (left_lane_type != null && left_lane_type.Contains("no_vehicles"))
+        {
+            right_marking = RoadMarkingType.NONE;
+            left_marking = RoadMarkingType.NONE;
+        }
+        else if (left_lane_type != null && !left_lane_type.Contains("no_overtake") && (left_lane.side == lane.side || road.lanes.Length == 2))
         {
             if(no_center_lane)
             {
@@ -78,7 +83,7 @@ public class RoadBuilder : MonoBehaviour
                 left_marking = RoadMarkingType.DASHED;
             }
         }
-        else if (left_lane_type != null && left_lane_type.Contains("no_overtake") && left_lane.side == lane.side)
+        else if (left_lane_type != null && left_lane_type.Contains("no_overtake") && (left_lane.side == lane.side || road.lanes.Length == 2))
         {
             if(no_center_lane)
             {
@@ -94,8 +99,12 @@ public class RoadBuilder : MonoBehaviour
             left_marking = RoadMarkingType.NONE;
         }
 
-        
-        if (right_lane_type != null && !right_lane_type.Contains("no_overtake") && right_lane.side == lane.side)
+        if (right_lane_type != null && right_lane_type.Contains("no_vehicles"))
+        {
+            right_marking = RoadMarkingType.NONE;
+            left_marking = RoadMarkingType.NONE;
+        }
+        if (right_lane_type != null && !right_lane_type.Contains("no_overtake") && (right_lane.side == lane.side || road.lanes.Length == 2))
         {
             if(no_center_lane)
             {
@@ -110,7 +119,7 @@ public class RoadBuilder : MonoBehaviour
                 right_marking = RoadMarkingType.DASHED;
             }
         }
-        else if (right_lane_type != null && right_lane_type.Contains("no_overtake") && right_lane.side == lane.side)
+        else if (right_lane_type != null && right_lane_type.Contains("no_overtake") && (right_lane.side == lane.side || road.lanes.Length == 2))
         {
             if(no_center_lane)
             {

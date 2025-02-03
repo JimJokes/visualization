@@ -17,6 +17,11 @@ public class PrefabBuilder : MonoBehaviour
 
     PrefabMarking[] GetMarkingsForLane(Prefab prefab, int route_index)
     {
+        if(prefab.token.Contains("dirt"))
+        {
+            return new PrefabMarking[] { new PrefabMarking(), new PrefabMarking() };
+        }
+
         NavRoute route = prefab.nav_routes[route_index];
         if (route == null)
         {
