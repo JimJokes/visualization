@@ -38,29 +38,29 @@ public class RoadBuilder : MonoBehaviour
         {
             if(lane_index == 0)
             {
-                right_marking = RoadMarkingType.NONE;
-                if (double_markings)
-                {
-                    left_marking = RoadMarkingType.DOUBLE;
-                }
-            }
-            if(lane_index == road.lanes.Length - 1)
-            {
                 left_marking = RoadMarkingType.NONE;
                 if (double_markings)
                 {
                     right_marking = RoadMarkingType.DOUBLE;
                 }
             }
+            if(lane_index == road.lanes.Length - 1)
+            {
+                right_marking = RoadMarkingType.NONE;
+                if (double_markings)
+                {
+                    left_marking = RoadMarkingType.DOUBLE;
+                }
+            }
         }
 
         if (lane_index > 0)
         {
-            try { right_lane_type = lane_types[lane_index - 1]; right_lane = road.lanes[lane_index - 1]; } catch { }
+            try { right_lane_type = lane_types[lane_index + 1]; right_lane = road.lanes[lane_index + 1]; } catch { }
         }
         if (lane_index < road.lanes.Length - 1)
         {
-            try { left_lane_type = lane_types[lane_index + 1]; left_lane = road.lanes[lane_index + 1]; } catch { }
+            try { left_lane_type = lane_types[lane_index - 1]; left_lane = road.lanes[lane_index - 1]; } catch { }
         }
 
         if (left_lane_type != null && left_lane_type.Contains("no_vehicles"))
