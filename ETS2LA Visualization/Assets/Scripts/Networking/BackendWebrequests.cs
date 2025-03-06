@@ -61,26 +61,29 @@ public class BackendWebrequests : MonitoredBehaviour
                 {
                     string json = www.downloadHandler.text;
                     map = JsonUtility.FromJson<MapData>(json);
-                    roads_count = map.roads.Length;
-                    prefabs_count = map.prefabs.Length;
-                    models_count = map.models.Length;
-                    Debug.Log("Map data updated!");
 
-                    List<string> lane_types = new List<string>();
-                    foreach (Road road in map.roads)
+                    if(map.roads != null)
                     {
-                        foreach (string type in new string[] { "lanes_left", "lanes_right" })
+                        roads_count = map.roads.Length;
+                        prefabs_count = map.prefabs.Length;
+                        models_count = map.models.Length;
+                        Debug.Log("Map data updated!");
+
+                        List<string> lane_types = new List<string>();
+                        foreach (Road road in map.roads)
                         {
-                            foreach (string lane in road.road_look.GetType().GetField(type).GetValue(road.road_look) as string[])
+                            foreach (string type in new string[] { "lanes_left", "lanes_right" })
                             {
-                                if (!lane_types.Contains(lane))
+                                foreach (string lane in road.road_look.GetType().GetField(type).GetValue(road.road_look) as string[])
                                 {
-                                    lane_types.Add(lane);
+                                    if (!lane_types.Contains(lane))
+                                    {
+                                        lane_types.Add(lane);
+                                    }
                                 }
                             }
                         }
                     }
-
                 }
                 else if(tag == "map_update_time")
                 {
