@@ -7,7 +7,6 @@ public class Trailer : MonoBehaviour
     public int uid;
     public BackendSocket backend;
 
-
     void Update()
     {
         if(uid == 0)
@@ -22,10 +21,14 @@ public class Trailer : MonoBehaviour
         {
             Material material = transform.GetChild(0).GetChild(0).GetComponent<MeshRenderer>().material;
             material.color = new Color(0.5f, 0.9f, 1.0f);
+            material = transform.GetChild(1).GetChild(0).GetComponent<MeshRenderer>().material;
+            material.color = new Color(0.5f, 0.9f, 1.0f);
         }    
         else
         {
             Material material = transform.GetChild(0).GetChild(0).GetComponent<MeshRenderer>().material;
+            material.color = new Color(0.5f, 0.5f, 0.5f);
+            material = transform.GetChild(1).GetChild(0).GetComponent<MeshRenderer>().material;
             material.color = new Color(0.5f, 0.5f, 0.5f);
         }
     }
