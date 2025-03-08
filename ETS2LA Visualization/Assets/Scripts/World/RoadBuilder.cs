@@ -54,11 +54,11 @@ public class RoadBuilder : MonoBehaviour
             }
         }
 
-        if (lane_index > 0)
+        if (lane_index < road.lanes.Length - 1)
         {
             try { right_lane_type = lane_types[lane_index + 1]; right_lane = road.lanes[lane_index + 1]; } catch { }
         }
-        if (lane_index < road.lanes.Length - 1)
+        if (lane_index > 0)
         {
             try { left_lane_type = lane_types[lane_index - 1]; left_lane = road.lanes[lane_index - 1]; } catch { }
         }
