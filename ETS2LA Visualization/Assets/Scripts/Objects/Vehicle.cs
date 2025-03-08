@@ -64,48 +64,7 @@ public class Vehicle : MonoBehaviour
         }
 
         VehicleClass self = backend.world.traffic[System.Array.FindIndex(uids, element => element == uid)];
-
-        Vector3 target_position = new Vector3(self.position.z - backend.truck.transform.sector_y, self.position.y + self.size.height / 2, self.position.x - backend.truck.transform.sector_x);
-        Vector3 truck_position = new Vector3(backend.truck.transform.z - backend.truck.transform.sector_y, backend.truck.transform.y, backend.truck.transform.x - backend.truck.transform.sector_x);
-        if(Vector3.Distance(transform.position, target_position) > 5f)
-        {
-            transform.position = target_position;
-            transform.DOKill();
-        }
-        else
-        {
-            transform.DOMove(target_position, 0.25f).SetLink(gameObject);
-        }
-        
-        transform.DORotate(new Vector3(self.rotation.pitch, -self.rotation.yaw + 90, -self.rotation.roll), 0.25f).SetLink(gameObject);
-        transform.localScale = new Vector3(self.size.width, self.size.height, self.size.length);
-
         int trailer_count = self.trailer_count;
-        for(int i = 0; i < 2; i++)
-        {
-            if (i >= trailer_count)
-            {
-                trailers[i].SetActive(false);
-                continue;
-            }
-
-            trailers[i].SetActive(true);
-            trailers[i].GetComponent<Trailer>().uid = uid;
-            trailers[i].GetComponent<Trailer>().backend = backend;
-
-            Vector3 target_trailer_position = new Vector3(self.trailers[i].position.z - backend.truck.transform.sector_y, self.trailers[i].position.y + self.trailers[i].size.height / 2, self.trailers[i].position.x - backend.truck.transform.sector_x);
-            if (Vector3.Distance(trailers[i].transform.position, target_trailer_position) > 5f)
-            {
-                trailers[i].transform.position = target_trailer_position;
-                trailers[i].transform.DOKill();
-            }
-            else
-            {
-                trailers[i].transform.DOMove(target_trailer_position, 0.25f).SetLink(gameObject);
-            }
-            trailers[i].transform.DORotate(new Vector3(self.trailers[i].rotation.pitch, -self.trailers[i].rotation.yaw + 90, -self.trailers[i].rotation.roll), 0.25f).SetLink(gameObject);
-            trailers[i].transform.localScale = new Vector3(self.trailers[i].size.width, self.trailers[i].size.height, self.trailers[i].size.length);
-        }
 
         if(trailer_count != 0 && self.size.height > 2)
         {
@@ -122,6 +81,53 @@ public class Vehicle : MonoBehaviour
         else
         {
             type = "car";
+        }
+
+        Vector3 target_position = new Vector3(self.position.z - backend.truck.transform.sector_y, self.position.y + self.size.height / 2, self.position.x - backend.truck.transform.sector_x);
+        Vector3 truck_position = new Vector3(backend.truck.transform.z - backend.truck.transform.sector_y, backend.truck.transform.y, backend.truck.transform.x - backend.truck.transform.sector_x);
+        if(Vector3.Distance(transform.position, target_position) > 5f)
+        {
+            transform.position = target_position;
+            transform.DOKill();
+        }
+        else
+        {
+            transform.DOMove(target_position, 0.25f).SetLink(gameObject);
+        }
+        
+        transform.DORotate(new Vector3(self.rotation.pitch, -self.rotation.yaw + 90, -self.rotation.roll), 0.25f).SetLink(gameObject);
+        transform.localScale = new Vector3(self.size.width, self.size.height, self.size.length);
+
+        for(int i = 0; i < 2; i++)
+        {
+            if (i >= trailer_count)
+            {
+                trailers[i].SetActive(false);
+                continue;
+            }
+
+            trailers[i].SetActive(true);
+            trailers[i].GetComponent<Trailer>().uid = uid;
+            trailers[i].GetComponent<Trailer>().backend = backend;
+
+            if(type == "car")
+            {
+                trailers[i].transform.GetChild(0).gameObject.SetActive(false); // user_trailer
+                trailers[i].transform.GetChild(1).gameObject.SetActive(true);  // traffic_caravan
+            }
+
+            Vector3 target_trailer_position = new Vector3(self.trailers[i].position.z - backend.truck.transform.sector_y, self.trailers[i].position.y + self.trailers[i].size.height / 2, self.trailers[i].position.x - backend.truck.transform.sector_x);
+            if (Vector3.Distance(trailers[i].transform.position, target_trailer_position) > 5f)
+            {
+                trailers[i].transform.position = target_trailer_position;
+                trailers[i].transform.DOKill();
+            }
+            else
+            {
+                trailers[i].transform.DOMove(target_trailer_position, 0.25f).SetLink(gameObject);
+            }
+            trailers[i].transform.DORotate(new Vector3(self.trailers[i].rotation.pitch, -self.trailers[i].rotation.yaw + 90, -self.trailers[i].rotation.roll), 0.25f).SetLink(gameObject);
+            trailers[i].transform.localScale = new Vector3(self.trailers[i].size.width, self.trailers[i].size.height, self.trailers[i].size.length);
         }
 
         float distance = Vector3.Distance(truck_position, target_position);
