@@ -47,7 +47,7 @@ public class BackendSocket : MonitoredBehaviour
     #endregion
 
     #region Backend Setup
-    public int[] subscribed_channels = new int[] { 1, 2, 3, 4, 5, 6, 7 };
+    public int[] subscribed_channels = new int[] { 1, 2, 3, 4, 5, 6, 7, 8 };
 
     class SubscribeChannel {
         public int channel;
@@ -162,6 +162,21 @@ public class BackendSocket : MonitoredBehaviour
     public class StatusResponse : BaseResponse { public new StatusResult result; }
     #endregion
 
+    # region Channel 8 - Semaphores
+
+    [System.Serializable]
+    public class SemaphoreData
+    {
+        public TrafficLight[] traffic_lights;
+        public Gate[] gates;
+    }
+    [System.Serializable]
+    public class SemaphoreResult : BaseResult { public new SemaphoreData data; }
+    [System.Serializable]
+    public class SemaphoreResponse : BaseResponse { public new SemaphoreResult result; }
+
+    #endregion
+
     # region Truck
     public class Truck{
         public Transform transform;
@@ -181,6 +196,8 @@ public class BackendSocket : MonitoredBehaviour
     public class World
     {
         public VehicleClass[] traffic = new VehicleClass[0];
+        public TrafficLight[] traffic_lights = new TrafficLight[0];
+        public Gate[] gates = new Gate[0];
         public Highlights highlights = new Highlights();
         public RouteInformation[] route_information = new RouteInformation[0];
         public StatusData status = new StatusData();
@@ -280,13 +297,14 @@ public class BackendSocket : MonitoredBehaviour
             count++;
         }
 
-        if(count < subscribed_channels.Length)
+        if(count < subscribed_channels.Length - 1)
         {
             return;
         }
 
         while (connection.TryRemoveIncomingMessage(out string message)){
             BaseResponse response = JsonUtility.FromJson<BaseResponse>(message);
+            messages.Add(message);
             switch (response.channel)
             {
                 case 1:
@@ -340,9 +358,14 @@ public class BackendSocket : MonitoredBehaviour
                     StatusResult status_result = status_response.result;
                     world.status = status_result.data;
                     break;
+                
+                case 8:
+                    SemaphoreResponse semaphore_response = JsonUtility.FromJson<SemaphoreResponse>(message);
+                    SemaphoreResult semaphore_result = semaphore_response.result;
+                    world.traffic_lights = semaphore_result.data.traffic_lights;
+                    world.gates = semaphore_result.data.gates;
+                    break;
             }
-
-            messages.Add(message);
         }
         
         Acknowledge(connection, 0);
