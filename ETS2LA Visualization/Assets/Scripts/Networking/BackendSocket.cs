@@ -34,6 +34,7 @@ public class BackendSocket : MonitoredBehaviour
     public string url = "ws://localhost:37522"; // ETS2LA + 2 ports
     public float connection_retry_time = 5.0f; // seconds
     private float last_connection_retry = 0;
+    private float last_acknowledge = 0;
     #endregion
 
     #region Profiling
@@ -258,6 +259,7 @@ public class BackendSocket : MonitoredBehaviour
         subscribe.channel = channel;
         subscribe.method = "acknowledge";
         connection.AddOutgoingMessage(JsonUtility.ToJson(subscribe));
+        last_acknowledge = Time.time;
     }
 
     private void OnStateChanged(WebSocketConnection connection, WebSocketState oldState, WebSocketState newState)
@@ -297,8 +299,16 @@ public class BackendSocket : MonitoredBehaviour
             count++;
         }
 
-        if(count < subscribed_channels.Length - 1)
+
+        if(count < subscribed_channels.Length)
         {
+            if (Time.time - last_acknowledge > 0.1f)
+            {
+                // Didn't receive all message, clear and try again
+                Acknowledge(connection, 0);
+                while (connection.TryRemoveIncomingMessage(out string message)){}
+            }
+            
             return;
         }
 

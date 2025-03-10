@@ -14,10 +14,8 @@ public class CameraHandler : MonitoredBehaviour
     public Vector3 offset = new Vector3(0, 0, 0);
     public Vector3 offset_rotation = new Vector3(0, 0, 0);
     [Header("Stopped Offsets")]
-    public Vector3 stopped_offset = new Vector3(0, 0, 0);
     public Vector3 stopped_offset_rotation = new Vector3(0, 0, 0);
     [Header("Reverse Offsets")]
-    public Vector3 reverse_offset = new Vector3(0, 0, 0);
     public Vector3 reverse_offset_rotation = new Vector3(0, 0, 0);
     [Header("FOV")]
     public float at_0_speed = 55;
@@ -29,9 +27,16 @@ public class CameraHandler : MonitoredBehaviour
     Vector3 additional_rotation_offset = new Vector3(0, 0, 0);
     GameObject truck;
 
+    private float default_length = 0;
+
     void Start()
     {
         truck = GameObject.Find("Truck");
+
+        // Convert the offset vector to a 
+        // unit vector and store then length
+        default_length = offset.magnitude;
+        offset = offset.normalized;
     }
 
     Vector3 GetAverageSteeringPoint(){
@@ -101,10 +106,16 @@ public class CameraHandler : MonitoredBehaviour
         bool is_stationary = backend.truck.state.speed < 0.5f && backend.truck.state.speed > -0.5f;
         bool is_reversing = backend.truck.state.speed < -0.5f;
 
+        // Zoom the camera out with the additional rotation
+        float length = default_length;
+        length += math.abs(additional_rotation_offset.y) / 180 * 100f;
+
         if(is_stationary)
         {
             state = "stationary";
             // Rotate the stopped offset to match the new added rotation
+            Vector3 stopped_offset = offset * (length * 1.75f);
+
             additional_offset += RotatePointAroundPivot(stopped_offset, Vector3.zero, additional_rotation_offset) - stopped_offset;
 
             transform.DOLocalMove(stopped_offset + additional_offset, lerp_time);
@@ -113,6 +124,9 @@ public class CameraHandler : MonitoredBehaviour
         else if (is_reversing)
         {
             state = "reversing";
+            Vector3 reverse_offset = offset * length;
+            reverse_offset.z *= -1;
+
             // Rotate the stopped offset to match the new added rotation
             additional_offset += RotatePointAroundPivot(reverse_offset, Vector3.zero, additional_rotation_offset) - reverse_offset;
 
@@ -122,10 +136,11 @@ public class CameraHandler : MonitoredBehaviour
         else
         {
             state = "normal";
+            Vector3 normal_offset = offset * length;
             // Rotate the stopped offset to match the new added rotation
-            additional_offset += RotatePointAroundPivot(offset, Vector3.zero, additional_rotation_offset) - offset;
+            additional_offset += RotatePointAroundPivot(normal_offset, Vector3.zero, additional_rotation_offset) - normal_offset;
             
-            transform.DOLocalMove(offset + additional_offset, lerp_time);
+            transform.DOLocalMove(normal_offset + additional_offset, lerp_time);
             transform.DOLocalRotate(offset_rotation + additional_rotation_offset, lerp_time);
         }
 
