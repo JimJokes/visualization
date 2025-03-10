@@ -1,7 +1,7 @@
 using UnityEngine;
 
 [System.Serializable]
-public class VehiclePosition
+public class GamePosition
 {
     public float x;
     public float y;
@@ -9,7 +9,7 @@ public class VehiclePosition
 }
 
 [System.Serializable]
-public class VehicleQuaternion
+public class GameQuaternion
 {
     public float x;
     public float y;
@@ -31,16 +31,16 @@ public class VehicleSize
 [System.Serializable]
 public class TrailerClass
 {
-    public VehiclePosition position;
-    public VehicleQuaternion rotation;
+    public GamePosition position;
+    public GameQuaternion rotation;
     public VehicleSize size;
 }
 
 [System.Serializable]
 public class VehicleClass
 {
-    public VehiclePosition position;
-    public VehicleQuaternion rotation;
+    public GamePosition position;
+    public GameQuaternion rotation;
     public VehicleSize size;
     public float speed;
     public float acceleration;

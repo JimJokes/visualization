@@ -579,6 +579,53 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &328422903
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 328422904}
+  - component: {fileID: 328422905}
+  m_Layer: 0
+  m_Name: TrafficLights
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &328422904
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 328422903}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 481408046}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &328422905
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 328422903}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 86cb216f312a9af4ebc0d883d0aa1d0e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  traffic_lights: []
+  traffic_light_prefab: {fileID: 1653125729152281913, guid: b1504cfaa211d5c4797e0d64854b313d, type: 3}
+  backend: {fileID: 1028169603}
 --- !u!1 &330585543
 GameObject:
   m_ObjectHideFlags: 0
@@ -982,6 +1029,7 @@ Transform:
   - {fileID: 1350641179}
   - {fileID: 1008680651}
   - {fileID: 1809503196}
+  - {fileID: 328422904}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &511204556
@@ -1807,7 +1855,7 @@ MonoBehaviour:
   url: ws://localhost:37522
   connection_retry_time: 5
   profiling_time: 1
-  subscribed_channels: 01000000020000000300000004000000050000000600000007000000
+  subscribed_channels: 0100000002000000030000000400000005000000060000000700000008000000
 --- !u!4 &1028169604
 Transform:
   m_ObjectHideFlags: 0
@@ -2393,6 +2441,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   highlightedVehicleUIElement: {fileID: 3582254240053553689, guid: c847286731ea4c647a8bfb545218e286, type: 3}
   showHighlightedVehicleOverlay: 1
+  trafficLightUIElement: {fileID: 3582254240053553689, guid: 6f4c3510036573a46885fad836e2fe83, type: 3}
+  showTrafficLightOverlay: 1
 --- !u!114 &1747629459
 MonoBehaviour:
   m_ObjectHideFlags: 0
